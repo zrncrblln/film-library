@@ -116,3 +116,22 @@ export interface FavoriteMovie {
   movie: Movie;
   dateAdded: string;
 }
+
+// Filter interfaces
+export interface MovieFilters {
+  genre: string;
+  year: string;
+  minRating: string;
+  sortBy: string;
+}
+
+// API Response interfaces
+export interface GenreResponse {
+  genres: Genre[];
+}
+
+export interface ApiError {
+  status_message: string;
+  status_code: number;
+  success: boolean;
+}

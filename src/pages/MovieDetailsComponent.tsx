@@ -11,7 +11,7 @@ import {
   getYouTubeTrailerUrl,
 } from "../services/movieApi";
 
-const MovieDetails: React.FC = () => {
+const MovieDetailsComponent: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [credits, setCredits] = useState<Credits | null>(null);
@@ -213,4 +213,4 @@ const MovieDetails: React.FC = () => {
   );
 };
 
-export default MovieDetails;
+export default MovieDetailsComponent;

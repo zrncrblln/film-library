@@ -1,13 +1,68 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useCallback, useMemo } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
-import { FaSun, FaMoon, FaSearch, FaHeart, FaHome } from "react-icons/fa";
+import { FaSun, FaMoon, FaHeart, FaHome } from "react-icons/fa";
+import { SearchIcon, ClearIcon } from "./icons";
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onSearch?: (query: string) => void;
+}
+
+const Header: React.FC<HeaderProps> = React.memo(({ onSearch }) => {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = useCallback(
+    (path: string) => {
+      return location.pathname === path;
+    },
+    [location.pathname]
+  );
+
+  const handleSearchSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (searchQuery.trim()) {
+        // Navigate to home page with search parameter
+        navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+        setSearchQuery("");
+      }
+    },
+    [searchQuery, navigate]
+  );
+
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchQuery(value);
+
+      // Auto-search for immediate results (like the hero section)
+      if (value.trim()) {
+        if (onSearch) {
+          onSearch(value.trim());
+        }
+      } else {
+        if (onSearch) {
+          onSearch("");
+        }
+      }
+    },
+    [onSearch]
+  );
+
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery("");
+    if (onSearch) {
+      onSearch("");
+    }
+  }, [onSearch]);
+
+  // Memoize theme toggle label
+  const themeToggleLabel = useMemo(() => {
+    return `Switch to ${theme === "light" ? "dark" : "light"} mode`;
+  }, [theme]);
 
   return (
     <header className="movie-header">
@@ -15,7 +70,7 @@ const Header: React.FC = () => {
         <div className="header-content">
           {/* Logo */}
           <Link to="/" className="logo">
-            <h1>MovieDB</h1>
+            <h1>MoviesZC</h1>
           </Link>
 
           {/* Navigation */}
@@ -38,22 +93,34 @@ const Header: React.FC = () => {
 
           {/* Search Bar */}
           <div className="header-actions">
-            <div className="search-container">
-              <FaSearch className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search movies..."
-                className="search-input"
-              />
-            </div>
+            <form onSubmit={handleSearchSubmit} className="search-form">
+              <div className="search-container">
+                <SearchIcon className="search-icon" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  placeholder="Search movies..."
+                  className="search-input"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={handleClearSearch}
+                    className="clear-search-btn"
+                    aria-label="Clear search"
+                  >
+                    <ClearIcon />
+                  </button>
+                )}
+              </div>
+            </form>
 
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
               className="theme-toggle"
-              aria-label={`Switch to ${
-                theme === "light" ? "dark" : "light"
-              } mode`}
+              aria-label={themeToggleLabel}
             >
               {theme === "light" ? <FaMoon /> : <FaSun />}
             </button>
@@ -62,6 +129,8 @@ const Header: React.FC = () => {
       </div>
     </header>
   );
-};
+});
+
+Header.displayName = "Header";
 
 export default Header;

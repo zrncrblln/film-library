@@ -3,8 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import Header from "../components/Header";
 import MovieList from "../components/MovieList";
 import SearchBar from "../components/SearchBar";
-import FilterPanel, { type MovieFilters } from "../components/FilterPanel";
-import type { Movie } from "../types";
+import FilterPanel from "../components/FilterPanel";
+import type { Movie, MovieFilters } from "../types";
 import { searchMovies, discoverMovies } from "../services/movieApi";
 
 const Home: React.FC = () => {
@@ -108,7 +108,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="home-page">
-      <Header />
+      <Header onSearch={handleSearch} />
 
       <main className="main-content">
         <div className="container">
@@ -164,6 +164,7 @@ const Home: React.FC = () => {
               onToggleFavorite={handleToggleFavorite}
               loading={loading}
               error={error}
+              onRetry={() => fetchMovies(initialSearchQuery)}
             />
           </section>
         </div>

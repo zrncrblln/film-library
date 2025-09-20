@@ -8,6 +8,7 @@ import type {
   VideosResponse,
   ReviewsResponse
 } from '../types';
+import { API_CONFIG, SORT_OPTIONS, IMAGE_SIZES, SEARCH_PARAMS } from '../constants/api';
 
 // Get API configuration from environment variables
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -30,7 +31,7 @@ const api = axios.create({
 });
 
 // Get popular movies
-export const getPopularMovies = async (page: number = 1): Promise<MovieResponse> => {
+export const getPopularMovies = async (page: number = API_CONFIG.DEFAULT_PAGE): Promise<MovieResponse> => {
   const response = await api.get('/movie/popular', {
     params: { page }
   });
@@ -38,7 +39,7 @@ export const getPopularMovies = async (page: number = 1): Promise<MovieResponse>
 };
 
 // Get top rated movies
-export const getTopRatedMovies = async (page: number = 1): Promise<MovieResponse> => {
+export const getTopRatedMovies = async (page: number = API_CONFIG.DEFAULT_PAGE): Promise<MovieResponse> => {
   const response = await api.get('/movie/top_rated', {
     params: { page }
   });
@@ -46,7 +47,7 @@ export const getTopRatedMovies = async (page: number = 1): Promise<MovieResponse
 };
 
 // Get now playing movies
-export const getNowPlayingMovies = async (page: number = 1): Promise<MovieResponse> => {
+export const getNowPlayingMovies = async (page: number = API_CONFIG.DEFAULT_PAGE): Promise<MovieResponse> => {
   const response = await api.get('/movie/now_playing', {
     params: { page }
   });
@@ -54,7 +55,7 @@ export const getNowPlayingMovies = async (page: number = 1): Promise<MovieRespon
 };
 
 // Search movies
-export const searchMovies = async (query: string, page: number = 1): Promise<MovieResponse> => {
+export const searchMovies = async (query: string, page: number = API_CONFIG.DEFAULT_PAGE): Promise<MovieResponse> => {
   const response = await api.get('/search/movie', {
     params: { query, page }
   });
@@ -80,7 +81,7 @@ export const getMovieVideos = async (movieId: number): Promise<VideosResponse> =
 };
 
 // Get movie reviews
-export const getMovieReviews = async (movieId: number, page: number = 1): Promise<ReviewsResponse> => {
+export const getMovieReviews = async (movieId: number, page: number = API_CONFIG.DEFAULT_PAGE): Promise<ReviewsResponse> => {
   const response = await api.get(`/movie/${movieId}/reviews`, {
     params: { page }
   });
@@ -103,7 +104,7 @@ export const discoverMovies = async (
     minRating?: number;
   } = {}
 ): Promise<MovieResponse> => {
-  const { page = 1, genre, year, sortBy = 'popularity.desc', minRating } = params;
+  const { page = API_CONFIG.DEFAULT_PAGE, genre, year, sortBy = SORT_OPTIONS.POPULARITY_DESC, minRating } = params;
 
   const searchParams: any = {
     page,
@@ -121,12 +122,12 @@ export const discoverMovies = async (
 };
 
 // Helper function to get full image URL
-export const getImageUrl = (path: string | null, size: string = 'w500'): string => {
-  if (!path) return '/placeholder-movie.jpg';
+export const getImageUrl = (path: string | null, size: string = API_CONFIG.DEFAULT_IMAGE_SIZE): string => {
+  if (!path) return API_CONFIG.PLACEHOLDER_IMAGE;
   return `${IMAGE_BASE_URL}/${size}${path}`;
 };
 
 // Helper function to get YouTube trailer URL
 export const getYouTubeTrailerUrl = (key: string): string => {
-  return `https://www.youtube.com/watch?v=${key}`;
+  return `${API_CONFIG.YOUTUBE_BASE_URL}${key}`;
 };

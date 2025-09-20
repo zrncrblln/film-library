@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { FaFilter, FaTimes } from "react-icons/fa";
-import type { Genre } from "../types";
+import type { Genre, MovieFilters } from "../types";
 import { getGenres } from "../services/movieApi";
+import { SORT_OPTIONS, RATING_FILTERS, SEARCH_PARAMS } from "../constants/api";
 
 interface FilterPanelProps {
   onFiltersChange: (filters: MovieFilters) => void;
   isOpen: boolean;
   onToggle: () => void;
-}
-
-export interface MovieFilters {
-  genre: string;
-  year: string;
-  minRating: string;
-  sortBy: string;
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({
@@ -71,25 +65,44 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         onClick={onToggle}
         className="filter-toggle-btn"
         aria-label="Open filters"
+        aria-expanded="false"
+        aria-controls="filter-panel"
       >
         <FaFilter />
-        {hasActiveFilters && <span className="filter-indicator"></span>}
+        {hasActiveFilters && (
+          <span className="filter-indicator" aria-hidden="true"></span>
+        )}
       </button>
     );
   }
 
   return (
-    <div className="filter-panel">
+    <div
+      className="filter-panel"
+      id="filter-panel"
+      role="region"
+      aria-labelledby="filter-heading"
+    >
       <div className="filter-header">
-        <h3>Filters</h3>
+        <h3 id="filter-heading">Filters</h3>
         <div className="filter-actions">
           {hasActiveFilters && (
-            <button onClick={clearFilters} className="clear-filters-btn">
+            <button
+              onClick={clearFilters}
+              className="clear-filters-btn"
+              aria-describedby="clear-filters-desc"
+            >
               Clear All
             </button>
           )}
-          <button onClick={onToggle} className="close-filters-btn">
-            <FaTimes />
+          <button
+            onClick={onToggle}
+            className="close-filters-btn"
+            aria-label="Close filters"
+            aria-expanded="true"
+            aria-controls="filter-panel"
+          >
+            <FaTimes aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -102,16 +115,20 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             id="sortBy"
             value={filters.sortBy}
             onChange={(e) => handleFilterChange("sortBy", e.target.value)}
+            aria-describedby="sortBy-desc"
           >
-            <option value="popularity.desc">Most Popular</option>
-            <option value="popularity.asc">Least Popular</option>
-            <option value="vote_average.desc">Highest Rated</option>
-            <option value="vote_average.asc">Lowest Rated</option>
-            <option value="release_date.desc">Newest First</option>
-            <option value="release_date.asc">Oldest First</option>
-            <option value="title.asc">Title A-Z</option>
-            <option value="title.desc">Title Z-A</option>
+            <option value={SORT_OPTIONS.POPULARITY_DESC}>Most Popular</option>
+            <option value={SORT_OPTIONS.POPULARITY_ASC}>Least Popular</option>
+            <option value={SORT_OPTIONS.RATING_DESC}>Highest Rated</option>
+            <option value={SORT_OPTIONS.RATING_ASC}>Lowest Rated</option>
+            <option value={SORT_OPTIONS.RELEASE_DATE_DESC}>Newest First</option>
+            <option value={SORT_OPTIONS.RELEASE_DATE_ASC}>Oldest First</option>
+            <option value={SORT_OPTIONS.TITLE_ASC}>Title A-Z</option>
+            <option value={SORT_OPTIONS.TITLE_DESC}>Title Z-A</option>
           </select>
+          <span id="sortBy-desc" className="sr-only">
+            Choose how to sort the movie results
+          </span>
         </div>
 
         {/* Genre Filter */}
@@ -122,6 +139,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             value={filters.genre}
             onChange={(e) => handleFilterChange("genre", e.target.value)}
             disabled={loading}
+            aria-describedby="genre-desc"
           >
             <option value="">All Genres</option>
             {genres.map((genre) => (
@@ -130,6 +148,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               </option>
             ))}
           </select>
+          <span id="genre-desc" className="sr-only">
+            Filter movies by genre
+          </span>
         </div>
 
         {/* Year Filter */}
@@ -141,9 +162,13 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             value={filters.year}
             onChange={(e) => handleFilterChange("year", e.target.value)}
             placeholder="e.g., 2023"
-            min="1900"
-            max={new Date().getFullYear()}
+            min={SEARCH_PARAMS.MIN_YEAR}
+            max={SEARCH_PARAMS.MAX_YEAR}
+            aria-describedby="year-desc"
           />
+          <span id="year-desc" className="sr-only">
+            Filter movies by release year
+          </span>
         </div>
 
         {/* Minimum Rating Filter */}
@@ -153,14 +178,18 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             id="minRating"
             value={filters.minRating}
             onChange={(e) => handleFilterChange("minRating", e.target.value)}
+            aria-describedby="rating-desc"
           >
-            <option value="">Any Rating</option>
-            <option value="8">8+ Stars</option>
-            <option value="7">7+ Stars</option>
-            <option value="6">6+ Stars</option>
-            <option value="5">5+ Stars</option>
-            <option value="4">4+ Stars</option>
+            <option value={RATING_FILTERS.ANY}>Any Rating</option>
+            <option value={RATING_FILTERS.EXCELLENT}>8+ Stars</option>
+            <option value={RATING_FILTERS.VERY_GOOD}>7+ Stars</option>
+            <option value={RATING_FILTERS.GOOD}>6+ Stars</option>
+            <option value={RATING_FILTERS.AVERAGE}>5+ Stars</option>
+            <option value={RATING_FILTERS.BELOW_AVERAGE}>4+ Stars</option>
           </select>
+          <span id="rating-desc" className="sr-only">
+            Filter movies by minimum rating
+          </span>
         </div>
       </div>
     </div>

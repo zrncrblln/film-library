@@ -8,6 +8,7 @@ interface MovieListProps {
   onToggleFavorite?: (movie: Movie) => void;
   loading?: boolean;
   error?: string | null;
+  onRetry?: () => void;
 }
 
 const MovieList: React.FC<MovieListProps> = ({
@@ -16,6 +17,7 @@ const MovieList: React.FC<MovieListProps> = ({
   onToggleFavorite,
   loading = false,
   error = null,
+  onRetry,
 }) => {
   if (loading) {
     return (
@@ -30,7 +32,7 @@ const MovieList: React.FC<MovieListProps> = ({
     return (
       <div className="movie-list-error">
         <p>Error: {error}</p>
-        <button onClick={() => window.location.reload()} className="retry-btn">
+        <button onClick={onRetry} className="retry-btn">
           Try Again
         </button>
       </div>
