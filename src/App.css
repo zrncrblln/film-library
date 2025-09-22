@@ -11,59 +11,86 @@ html {
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   color: var(--text-color);
   background-color: var(--bg-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===== CSS VARIABLES FOR THEMES ===== */
-:root {
-  /* Light Theme Variables */
+/* ===== THEME CSS VARIABLES ===== */
+
+/* Light Theme Variables */
+.light-theme {
   --bg-color: #ffffff;
-  --text-color: #333333;
-  --card-bg: #ffffff;
-  --header-bg: #ffffff;
+  --text-color: #141414;
+  --card-bg: #f8f9fa;
+  --header-bg: rgba(255, 255, 255, 0.95);
   --border-color: #e0e0e0;
   --shadow: rgba(0, 0, 0, 0.1);
-  --primary-color: #e50914;
-  --secondary-color: #333333;
-  --accent-color: #ff6b6b;
-  --hover-bg: #f8f9fa;
-  --input-bg: #f8f9fa;
+  --shadow-lg: rgba(0, 0, 0, 0.2);
+  --primary-color: #e50914; /* Netflix Red */
+  --primary-hover: #f40612;
+  --secondary-color: #6c757d;
+  --accent-color: #e50914;
+  --success-color: #28a745;
+  --hover-bg: #f1f3f4;
+  --input-bg: #ffffff;
   --button-bg: #e50914;
   --button-hover: #f40612;
-  --favorite-color: #ff6b6b;
-  --favorite-active: #e50914;
-  --overlay-bg: rgba(0, 0, 0, 0.7);
-  --loading-bg: rgba(255, 255, 255, 0.9);
+  --favorite-color: #e50914;
+  --favorite-active: #f40612;
+  --overlay-bg: rgba(0, 0, 0, 0.6);
+  --loading-bg: rgba(255, 255, 255, 0.95);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(229, 9, 20, 0.2);
+  --gradient-primary: linear-gradient(135deg, #e50914 0%, #b8070f 100%);
+  --gradient-accent: linear-gradient(135deg, #e50914 0%, #b8070f 100%);
+  --gradient-hero: linear-gradient(135deg, #e50914 0%, #b8070f 100%);
+  --netflix-black: #141414;
+  --netflix-dark-gray: #2f2f2f;
+  --netflix-gray: #6c757d;
+  --netflix-light-gray: #e5e5e5;
 }
 
+/* Dark Theme Variables (Netflix-inspired) */
 .dark-theme {
-  /* Dark Theme Variables */
   --bg-color: #141414;
   --text-color: #ffffff;
   --card-bg: #2f2f2f;
-  --header-bg: #141414;
+  --header-bg: rgba(20, 20, 20, 0.95);
   --border-color: #404040;
-  --shadow: rgba(0, 0, 0, 0.3);
-  --primary-color: #e50914;
+  --shadow: rgba(0, 0, 0, 0.5);
+  --shadow-lg: rgba(0, 0, 0, 0.8);
+  --primary-color: #e50914; /* Netflix Red */
+  --primary-hover: #f40612;
   --secondary-color: #b3b3b3;
-  --accent-color: #ff6b6b;
-  --hover-bg: #333333;
-  --input-bg: #333333;
+  --accent-color: #e50914;
+  --success-color: #46d369;
+  --hover-bg: #404040;
+  --input-bg: #2f2f2f;
   --button-bg: #e50914;
   --button-hover: #f40612;
-  --favorite-color: #ff6b6b;
-  --favorite-active: #e50914;
-  --overlay-bg: rgba(0, 0, 0, 0.8);
-  --loading-bg: rgba(20, 20, 20, 0.9);
+  --favorite-color: #e50914;
+  --favorite-active: #f40612;
+  --overlay-bg: rgba(0, 0, 0, 0.7);
+  --loading-bg: rgba(20, 20, 20, 0.95);
+  --glass-bg: rgba(47, 47, 47, 0.8);
+  --glass-border: rgba(229, 9, 20, 0.3);
+  --gradient-primary: linear-gradient(135deg, #e50914 0%, #b8070f 100%);
+  --gradient-accent: linear-gradient(135deg, #e50914 0%, #b8070f 100%);
+  --gradient-hero: linear-gradient(135deg, #e50914 0%, #b8070f 100%);
+  --netflix-black: #141414;
+  --netflix-dark-gray: #2f2f2f;
+  --netflix-gray: #b3b3b3;
+  --netflix-light-gray: #e5e5e5;
 }
 
 /* ===== UTILITY CLASSES ===== */
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -79,8 +106,12 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* ===== ACCESSIBILITY UTILITIES ===== */
@@ -96,7 +127,7 @@ body {
   border: 0;
 }
 
-/* ===== HEADER STYLES ===== */
+/* ===== NETFLIX-STYLE HEADER ===== */
 .movie-header {
   background-color: var(--header-bg);
   border-bottom: 1px solid var(--border-color);
@@ -104,6 +135,8 @@ body {
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 10px var(--shadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .header-content {
@@ -115,9 +148,10 @@ body {
 
 .logo h1 {
   color: var(--primary-color);
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: bold;
   margin: 0;
+  font-family: "Netflix Sans", Arial, sans-serif;
 }
 
 .nav-links {
@@ -134,15 +168,16 @@ body {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   transition: all 0.3s ease;
+  font-size: 0.9rem;
 }
 
 .nav-link:hover {
   background-color: var(--hover-bg);
-  color: var(--primary-color);
+  color: var(--text-color);
 }
 
 .nav-link.active {
-  color: var(--primary-color);
+  color: var(--text-color);
   background-color: var(--hover-bg);
 }
 
@@ -202,6 +237,10 @@ body {
   border-color: var(--primary-color);
 }
 
+.search-input::placeholder {
+  color: var(--secondary-color);
+}
+
 .clear-search-btn {
   position: absolute;
   right: 8px;
@@ -241,32 +280,313 @@ body {
 
 .theme-toggle:hover {
   background-color: var(--button-hover);
+  transform: scale(1.05);
 }
 
-/* ===== MAIN CONTENT ===== */
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* ===== NETFLIX-STYLE MAIN CONTENT ===== */
 .main-content {
   min-height: calc(100vh - 80px);
+  background-color: var(--bg-color);
 }
 
+/* ===== NETFLIX-STYLE BANNER/HERO SECTION ===== */
 .hero-section {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  position: relative;
+  height: 70vh;
+  min-height: 500px;
+  background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.8) 100%
+    ),
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect width="1200" height="600" fill="%23000"/><circle cx="600" cy="300" r="200" fill="%23e50914" opacity="0.3"/></svg>');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
   color: white;
-  padding: 3rem 0;
-  text-align: center;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  padding: 0 4rem;
 }
 
 .hero-content h1 {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   margin-bottom: 1rem;
   font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  line-height: 1.1;
 }
 
 .hero-content p {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   margin-bottom: 2rem;
   opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  line-height: 1.4;
 }
 
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.hero-btn {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hero-btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.hero-btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: scale(1.05);
+}
+
+.hero-btn-secondary {
+  background-color: transparent;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.hero-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: white;
+}
+
+/* ===== NETFLIX-STYLE MOVIE ROWS ===== */
+.movie-rows {
+  background-color: var(--bg-color);
+  padding: 2rem 0;
+}
+
+.movie-row {
+  margin-bottom: 3rem;
+}
+
+.row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0 4rem;
+}
+
+.row-title {
+  color: var(--text-color);
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.row-navigation {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.row-nav-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.row-nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.movie-row-container {
+  position: relative;
+  padding: 0 4rem;
+}
+
+.movie-slider {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.movie-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-slider > * {
+  flex: 0 0 auto;
+  width: 280px;
+}
+
+/* ===== NETFLIX-STYLE MOVIE CARD ===== */
+.movie-card {
+  position: relative;
+  transition: transform 0.3s ease;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.movie-card:hover {
+  transform: scale(1.1);
+  z-index: 10;
+}
+
+.movie-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.movie-poster {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.movie-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.movie-card:hover .movie-poster img {
+  transform: scale(1.2);
+}
+
+.movie-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.movie-card:hover .movie-overlay {
+  opacity: 1;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  color: var(--favorite-color);
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.favorite-btn:hover,
+.favorite-btn.active {
+  background: var(--favorite-active);
+  color: white;
+  transform: scale(1.1);
+}
+
+.movie-info {
+  color: white;
+  margin-top: auto;
+}
+
+/* ===== ENHANCED MOVIE CARD TEXT STYLING ===== */
+.movie-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+  color: white;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  text-align: left;
+}
+
+.movie-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.movie-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #ffd700;
+  font-weight: 500;
+}
+
+.star-icon {
+  color: #ffd700;
+  font-size: 0.7rem;
+}
+
+.movie-year {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+}
+
+.movie-overview {
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.9);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* ===== SEARCH AND FILTER SECTIONS ===== */
 .search-section {
   display: flex;
   justify-content: center;
@@ -441,6 +761,12 @@ body {
 
 .retry-btn:hover {
   background: var(--button-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+.retry-btn:active {
+  transform: translateY(0);
 }
 
 .empty-favorites {
@@ -470,138 +796,12 @@ body {
 
 .browse-movies-btn:hover {
   background: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px var(--shadow);
 }
 
-/* ===== MOVIE GRID ===== */
-.movie-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
-}
-
-/* ===== MOVIE CARD ===== */
-.movie-card {
-  background-color: var(--card-bg);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px var(--shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-}
-
-.movie-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px var(--shadow);
-}
-
-.movie-card-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-
-.movie-poster {
-  position: relative;
-  width: 100%;
-  height: 400px;
-  overflow: hidden;
-}
-
-.movie-poster img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.movie-card:hover .movie-poster img {
-  transform: scale(1.05);
-}
-
-.movie-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--overlay-bg);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.movie-card:hover .movie-overlay {
-  opacity: 1;
-}
-
-.favorite-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: var(--favorite-color);
-  font-size: 1.5rem;
-  padding: 0.5rem;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.favorite-btn:hover,
-.favorite-btn.active {
-  background: var(--favorite-active);
-  color: white;
-  transform: scale(1.1);
-}
-
-.movie-info {
-  color: white;
-  margin-top: auto;
-}
-
-.movie-title {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  line-height: 1.3;
-}
-
-.movie-meta {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.movie-rating {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.star-icon {
-  color: #ffd700;
-}
-
-.movie-year {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.movie-overview {
-  font-size: 0.85rem;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.9);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.browse-movies-btn:active {
+  transform: translateY(-1px);
 }
 
 /* ===== FAVORITES PAGE ===== */
@@ -800,6 +1000,12 @@ body {
 
 .trailer-btn:hover {
   background: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px var(--shadow);
+}
+
+.trailer-btn:active {
+  transform: translateY(-1px);
 }
 
 /* ===== LOADING & ERROR STATES ===== */
@@ -824,7 +1030,7 @@ body {
   margin-bottom: 2rem;
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+/* ===== ENHANCED RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
@@ -846,27 +1052,47 @@ body {
     width: 200px;
   }
 
-  .hero-content h1 {
-    font-size: 2rem;
+  .hero-content {
+    padding: 0 2rem;
   }
 
-  .search-section {
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-actions {
     flex-direction: column;
-    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .row-header,
+  .movie-row-container {
+    padding: 0 2rem;
+  }
+
+  .movie-slider > * {
+    width: 240px;
+  }
+
+  .movie-poster {
+    height: 140px;
+  }
+
+  .movie-title {
+    font-size: 0.8rem;
+  }
+
+  .movie-meta {
+    font-size: 0.7rem;
+  }
+
+  .movie-overview {
+    font-size: 0.7rem;
   }
 
   .movie-details-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
-  }
-
-  .movie-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-
-  .movie-poster {
-    height: 350px;
   }
 
   .movie-title {
@@ -883,24 +1109,45 @@ body {
     padding: 0 15px;
   }
 
+  .hero-content {
+    padding: 0 1rem;
+  }
+
   .hero-content h1 {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
 
   .hero-content p {
     font-size: 1rem;
   }
 
-  .movie-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  .row-header,
+  .movie-row-container {
+    padding: 0 1rem;
+  }
+
+  .movie-slider > * {
+    width: 200px;
   }
 
   .movie-poster {
-    height: 300px;
+    height: 120px;
   }
 
   .movie-title {
-    font-size: 2rem;
+    font-size: 0.75rem;
+  }
+
+  .movie-meta {
+    font-size: 0.65rem;
+  }
+
+  .movie-overview {
+    font-size: 0.65rem;
+  }
+
+  .movie-title {
+    font-size: 1.8rem;
   }
 
   .movie-meta {
@@ -929,11 +1176,6 @@ a:focus {
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   :root {
-    --border-color: #000000;
-    --shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  .dark-theme {
     --border-color: #ffffff;
     --shadow: rgba(255, 255, 255, 0.3);
   }

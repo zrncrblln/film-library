@@ -1,76 +1,70 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useTheme } from "../contexts/ThemeContext";
 import { FaSun, FaMoon, FaHeart, FaHome } from "react-icons/fa";
+
+// Context
+import { useTheme } from "../hooks/useTheme";
+
+// Components
 import { SearchIcon, ClearIcon } from "./icons";
 
 interface HeaderProps {
   onSearch?: (query: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = React.memo(({ onSearch }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const isActive = useCallback(
-    (path: string) => {
-      return location.pathname === path;
-    },
-    [location.pathname]
-  );
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
-  const handleSearchSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      if (searchQuery.trim()) {
-        // Navigate to home page with search parameter
-        navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
-        setSearchQuery("");
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Navigate to home page with search parameter
+      navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    // Auto-search for immediate results (like the hero section)
+    if (value.trim()) {
+      if (onSearch) {
+        onSearch(value.trim());
       }
-    },
-    [searchQuery, navigate]
-  );
-
-  const handleSearchChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setSearchQuery(value);
-
-      // Auto-search for immediate results (like the hero section)
-      if (value.trim()) {
-        if (onSearch) {
-          onSearch(value.trim());
-        }
-      } else {
-        if (onSearch) {
-          onSearch("");
-        }
+    } else {
+      if (onSearch) {
+        onSearch("");
       }
-    },
-    [onSearch]
-  );
+    }
+  };
 
-  const handleClearSearch = useCallback(() => {
+  const handleClearSearch = () => {
     setSearchQuery("");
     if (onSearch) {
       onSearch("");
     }
-  }, [onSearch]);
+  };
 
-  // Memoize theme toggle label
-  const themeToggleLabel = useMemo(() => {
-    return `Switch to ${theme === "light" ? "dark" : "light"} mode`;
-  }, [theme]);
+  const themeToggleLabel = `Switch to ${
+    theme === "light" ? "dark" : "light"
+  } mode`;
 
   return (
     <header className="movie-header">
       <div className="container">
         <div className="header-content">
           {/* Logo */}
-          <Link to="/" className="logo">
-            <h1>MoviesZC</h1>
+          <Link to="/" className="logo" style={{ textDecoration: "none" }}>
+            <h1>Moviez</h1>
           </Link>
 
           {/* Navigation */}
@@ -129,8 +123,6 @@ const Header: React.FC<HeaderProps> = React.memo(({ onSearch }) => {
       </div>
     </header>
   );
-});
-
-Header.displayName = "Header";
+};
 
 export default Header;

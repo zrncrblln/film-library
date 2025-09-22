@@ -1,22 +1,21 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import type { ReactNode } from "react";
-
-type Theme = "light" | "dark";
+import { createContext } from "react";
+import {
+  THEME_STORAGE_KEY,
+  THEMES,
+  THEME_CLASSES,
+  type Theme,
+} from "../constants/theme";
 
 interface ThemeContextType {
   theme: Theme;
   toggleTheme: () => void;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return context;
-};
+export const ThemeContext = createContext<ThemeContextType | undefined>(
+  undefined
+);
 
 interface ThemeProviderProps {
   children: ReactNode;
@@ -25,8 +24,8 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     // Check localStorage first, then system preference
-    const savedTheme = localStorage.getItem("movieAppTheme") as Theme;
-    if (savedTheme) {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) as Theme;
+    if (savedTheme && Object.values(THEMES).includes(savedTheme)) {
       return savedTheme;
     }
 
@@ -35,29 +34,31 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       window.matchMedia &&
       window.matchMedia("(prefers-color-scheme: dark)").matches
     ) {
-      return "dark";
+      return THEMES.DARK;
     }
 
-    return "light";
+    return THEMES.LIGHT;
   });
 
   useEffect(() => {
     // Save theme to localStorage
-    localStorage.setItem("movieAppTheme", theme);
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
 
     // Apply theme to document
     const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark-theme");
-      root.classList.remove("light-theme");
+    if (theme === THEMES.DARK) {
+      root.classList.add(THEME_CLASSES.DARK);
+      root.classList.remove(THEME_CLASSES.LIGHT);
     } else {
-      root.classList.add("light-theme");
-      root.classList.remove("dark-theme");
+      root.classList.add(THEME_CLASSES.LIGHT);
+      root.classList.remove(THEME_CLASSES.DARK);
     }
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    setTheme((prevTheme) =>
+      prevTheme === THEMES.LIGHT ? THEMES.DARK : THEMES.LIGHT
+    );
   };
 
   return (

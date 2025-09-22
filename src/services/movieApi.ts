@@ -1,6 +1,5 @@
 import axios from 'axios';
 import type {
-  Movie,
   MovieDetails,
   MovieResponse,
   Genre,
@@ -8,7 +7,7 @@ import type {
   VideosResponse,
   ReviewsResponse
 } from '../types';
-import { API_CONFIG, SORT_OPTIONS, IMAGE_SIZES, SEARCH_PARAMS } from '../constants/api';
+import { API_CONFIG, SORT_OPTIONS } from '../constants/api';
 
 // Get API configuration from environment variables
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -106,7 +105,13 @@ export const discoverMovies = async (
 ): Promise<MovieResponse> => {
   const { page = API_CONFIG.DEFAULT_PAGE, genre, year, sortBy = SORT_OPTIONS.POPULARITY_DESC, minRating } = params;
 
-  const searchParams: any = {
+  const searchParams: {
+    page: number;
+    sort_by: string;
+    with_genres?: string;
+    primary_release_year?: number;
+    'vote_average.gte'?: number;
+  } = {
     page,
     sort_by: sortBy,
   };

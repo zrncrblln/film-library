@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { FaHeart, FaStar, FaPlay, FaArrowLeft } from "react-icons/fa";
-import Header from "../components/Header";
+
+// Types
 import type { MovieDetails, Credits, Video } from "../types";
+
+// Services
 import {
   getMovieDetails,
   getMovieCredits,
@@ -10,6 +13,9 @@ import {
   getImageUrl,
   getYouTubeTrailerUrl,
 } from "../services/movieApi";
+
+// Components
+import Header from "../components/Header";
 
 const MovieDetailsComponent: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +26,21 @@ const MovieDetailsComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
 
+  // Helper function to format rating
+  const formatRating = (rating: number | undefined) => {
+    return rating && !isNaN(rating) ? rating.toFixed(1) : "0.0";
+  };
+
+  // Helper function to get favorites from localStorage
+  const getFavorites = () => {
+    return JSON.parse(localStorage.getItem("movieFavorites") || "[]");
+  };
+
+  // Helper function to save favorites to localStorage
+  const saveFavorites = (favorites: number[]) => {
+    localStorage.setItem("movieFavorites", JSON.stringify(favorites));
+  };
+
   useEffect(() => {
     const fetchMovieData = async () => {
       if (!id) return;
@@ -28,7 +49,7 @@ const MovieDetailsComponent: React.FC = () => {
         setLoading(true);
         const movieId = parseInt(id);
 
-        // Fetch movie details, credits, and videos in parallel
+        // Fetch all data in parallel
         const [movieData, creditsData, videosData] = await Promise.all([
           getMovieDetails(movieId),
           getMovieCredits(movieId),
@@ -38,16 +59,14 @@ const MovieDetailsComponent: React.FC = () => {
         setMovie(movieData);
         setCredits(creditsData);
 
-        // Filter for trailers only
+        // Filter for YouTube trailers only
         const trailers = videosData.results.filter(
           (video) => video.type === "Trailer" && video.site === "YouTube"
         );
         setVideos(trailers);
 
         // Check if movie is in favorites
-        const favorites = JSON.parse(
-          localStorage.getItem("movieFavorites") || "[]"
-        );
+        const favorites = getFavorites();
         setIsFavorite(favorites.includes(movieId));
       } catch (err) {
         setError(
@@ -64,18 +83,15 @@ const MovieDetailsComponent: React.FC = () => {
   const handleToggleFavorite = () => {
     if (!movie) return;
 
-    const favorites = JSON.parse(
-      localStorage.getItem("movieFavorites") || "[]"
-    );
-    let newFavorites;
+    const favorites = getFavorites();
+    const movieId = movie.id;
 
-    if (isFavorite) {
-      newFavorites = favorites.filter((favId: number) => favId !== movie.id);
-    } else {
-      newFavorites = [...favorites, movie.id];
-    }
+    // Toggle favorite status
+    const newFavorites = isFavorite
+      ? favorites.filter((id: number) => id !== movieId)
+      : [...favorites, movieId];
 
-    localStorage.setItem("movieFavorites", JSON.stringify(newFavorites));
+    saveFavorites(newFavorites);
     setIsFavorite(!isFavorite);
   };
 
@@ -149,7 +165,7 @@ const MovieDetailsComponent: React.FC = () => {
               <div className="movie-meta">
                 <div className="movie-rating">
                   <FaStar className="star-icon" />
-                  <span>{movie.vote_average.toFixed(1)}</span>
+                  <span>{formatRating(movie.vote_average)}</span>
                   <span className="rating-count">
                     ({movie.vote_count.toLocaleString()} votes)
                   </span>
