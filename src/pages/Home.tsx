@@ -186,25 +186,53 @@ const Home: React.FC = () => {
     });
   };
 
-  // Handle movie row scrolling
+  // Handle movie row scrolling with improved logic
   const scrollLeft = (sliderRef: React.RefObject<HTMLDivElement | null>) => {
     if (sliderRef.current) {
-      const scrollAmount = sliderRef.current.clientWidth * 0.8; // Scroll 80% of container width
-      sliderRef.current.scrollBy({
-        left: -scrollAmount,
-        behavior: "smooth",
-      });
+      const container = sliderRef.current;
+      const scrollAmount = Math.min(
+        container.clientWidth * 0.8,
+        container.scrollWidth - container.clientWidth
+      );
+
+      if (scrollAmount > 0) {
+        container.scrollBy({
+          left: -scrollAmount,
+          behavior: "smooth",
+        });
+      }
     }
   };
 
   const scrollRight = (sliderRef: React.RefObject<HTMLDivElement | null>) => {
     if (sliderRef.current) {
-      const scrollAmount = sliderRef.current.clientWidth * 0.8; // Scroll 80% of container width
-      sliderRef.current.scrollBy({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
+      const container = sliderRef.current;
+      const scrollAmount = Math.min(
+        container.clientWidth * 0.8,
+        container.scrollWidth - container.clientWidth - container.scrollLeft
+      );
+
+      if (scrollAmount > 0) {
+        container.scrollBy({
+          left: scrollAmount,
+          behavior: "smooth",
+        });
+      }
     }
+  };
+
+  // Check if scrolling is possible
+  const canScrollLeft = (sliderRef: React.RefObject<HTMLDivElement | null>) => {
+    return sliderRef.current ? sliderRef.current.scrollLeft > 0 : false;
+  };
+
+  const canScrollRight = (
+    sliderRef: React.RefObject<HTMLDivElement | null>
+  ) => {
+    return sliderRef.current
+      ? sliderRef.current.scrollLeft <
+          sliderRef.current.scrollWidth - sliderRef.current.clientWidth - 1
+      : false;
   };
 
   return (
@@ -263,6 +291,7 @@ const Home: React.FC = () => {
                     className="row-nav-btn"
                     aria-label="Scroll left"
                     onClick={() => scrollLeft(popularSliderRef)}
+                    disabled={!canScrollLeft(popularSliderRef)}
                   >
                     &#8249;
                   </button>
@@ -270,6 +299,7 @@ const Home: React.FC = () => {
                     className="row-nav-btn"
                     aria-label="Scroll right"
                     onClick={() => scrollRight(popularSliderRef)}
+                    disabled={!canScrollRight(popularSliderRef)}
                   >
                     &#8250;
                   </button>
@@ -298,6 +328,7 @@ const Home: React.FC = () => {
                     className="row-nav-btn"
                     aria-label="Scroll left"
                     onClick={() => scrollLeft(topRatedSliderRef)}
+                    disabled={!canScrollLeft(topRatedSliderRef)}
                   >
                     &#8249;
                   </button>
@@ -305,6 +336,7 @@ const Home: React.FC = () => {
                     className="row-nav-btn"
                     aria-label="Scroll right"
                     onClick={() => scrollRight(topRatedSliderRef)}
+                    disabled={!canScrollRight(topRatedSliderRef)}
                   >
                     &#8250;
                   </button>
@@ -333,6 +365,7 @@ const Home: React.FC = () => {
                     className="row-nav-btn"
                     aria-label="Scroll left"
                     onClick={() => scrollLeft(upcomingSliderRef)}
+                    disabled={!canScrollLeft(upcomingSliderRef)}
                   >
                     &#8249;
                   </button>
@@ -340,6 +373,7 @@ const Home: React.FC = () => {
                     className="row-nav-btn"
                     aria-label="Scroll right"
                     onClick={() => scrollRight(upcomingSliderRef)}
+                    disabled={!canScrollRight(upcomingSliderRef)}
                   >
                     &#8250;
                   </button>
