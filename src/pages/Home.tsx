@@ -235,14 +235,12 @@ const Home: React.FC = () => {
   // Handle movie row scrolling with improved logic
   const scrollLeft = (sliderRef: React.RefObject<HTMLDivElement | null>) => {
     if (sliderRef.current) {
-      const container = sliderRef.current;
-      const scrollAmount = Math.min(
-        container.clientWidth * 0.8,
-        container.scrollWidth - container.clientWidth
-      );
-
-      if (scrollAmount > 0) {
-        container.scrollBy({
+      const slider = sliderRef.current.querySelector(
+        ".movie-slider"
+      ) as HTMLDivElement;
+      if (slider) {
+        const scrollAmount = slider.clientWidth * 0.8;
+        slider.scrollBy({
           left: -scrollAmount,
           behavior: "smooth",
         });
@@ -252,14 +250,12 @@ const Home: React.FC = () => {
 
   const scrollRight = (sliderRef: React.RefObject<HTMLDivElement | null>) => {
     if (sliderRef.current) {
-      const container = sliderRef.current;
-      const scrollAmount = Math.min(
-        container.clientWidth * 0.8,
-        container.scrollWidth - container.clientWidth - container.scrollLeft
-      );
-
-      if (scrollAmount > 0) {
-        container.scrollBy({
+      const slider = sliderRef.current.querySelector(
+        ".movie-slider"
+      ) as HTMLDivElement;
+      if (slider) {
+        const scrollAmount = slider.clientWidth * 0.8;
+        slider.scrollBy({
           left: scrollAmount,
           behavior: "smooth",
         });
@@ -269,16 +265,27 @@ const Home: React.FC = () => {
 
   // Check if scrolling is possible
   const canScrollLeft = (sliderRef: React.RefObject<HTMLDivElement | null>) => {
-    return sliderRef.current ? sliderRef.current.scrollLeft > 0 : false;
+    if (sliderRef.current) {
+      const slider = sliderRef.current.querySelector(
+        ".movie-slider"
+      ) as HTMLDivElement;
+      return slider ? slider.scrollLeft > 0 : false;
+    }
+    return false;
   };
 
   const canScrollRight = (
     sliderRef: React.RefObject<HTMLDivElement | null>
   ) => {
-    return sliderRef.current
-      ? sliderRef.current.scrollLeft <
-          sliderRef.current.scrollWidth - sliderRef.current.clientWidth - 1
-      : false;
+    if (sliderRef.current) {
+      const slider = sliderRef.current.querySelector(
+        ".movie-slider"
+      ) as HTMLDivElement;
+      return slider
+        ? slider.scrollLeft < slider.scrollWidth - slider.clientWidth - 1
+        : false;
+    }
+    return false;
   };
 
   return (
