@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
+import { FaPlay, FaInfoCircle, FaStar } from "react-icons/fa";
 
 // Types
 import type { Movie, MovieFilters } from "../types";
 
 // Services
-import { searchMovies, discoverMovies } from "../services/movieApi";
+import {
+  searchMovies,
+  discoverMovies,
+  getImageUrl,
+} from "../services/movieApi";
+import { IMAGE_SIZES } from "../constants/api";
 
 // Components
 import Header from "../components/Header";
@@ -19,15 +25,24 @@ const Home: React.FC = () => {
   const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
   const [topRatedMovies, setTopRatedMovies] = useState<Movie[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
+  const [trendingMovies, setTrendingMovies] = useState<Movie[]>([]);
+  const [actionMovies, setActionMovies] = useState<Movie[]>([]);
+  const [dramaMovies, setDramaMovies] = useState<Movie[]>([]);
+  const [comedyMovies, setComedyMovies] = useState<Movie[]>([]);
+  const [featuredMovie, setFeaturedMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
   // Refs for movie sliders
+  const trendingSliderRef = useRef<HTMLDivElement>(null);
   const popularSliderRef = useRef<HTMLDivElement>(null);
   const topRatedSliderRef = useRef<HTMLDivElement>(null);
   const upcomingSliderRef = useRef<HTMLDivElement>(null);
+  const actionSliderRef = useRef<HTMLDivElement>(null);
+  const dramaSliderRef = useRef<HTMLDivElement>(null);
+  const comedySliderRef = useRef<HTMLDivElement>(null);
 
   // Get initial search query from URL params
   const initialSearchQuery = searchParams.get("search") || "";
@@ -99,24 +114,51 @@ const Home: React.FC = () => {
       setLoading(true);
 
       // Fetch different movie categories
-      const [popularResponse, topRatedResponse, upcomingResponse] =
-        await Promise.all([
-          discoverMovies({ sortBy: "popularity.desc" }),
-          discoverMovies({ sortBy: "vote_average.desc" }),
-          discoverMovies({ sortBy: "release_date.desc" }),
-        ]);
+      const [
+        trendingResponse,
+        popularResponse,
+        topRatedResponse,
+        upcomingResponse,
+        actionResponse,
+        dramaResponse,
+        comedyResponse,
+      ] = await Promise.all([
+        discoverMovies({ sortBy: "popularity.desc" }),
+        discoverMovies({ sortBy: "popularity.desc" }),
+        discoverMovies({ sortBy: "vote_average.desc" }),
+        discoverMovies({ sortBy: "release_date.desc" }),
+        discoverMovies({ sortBy: "popularity.desc", genre: "28" }), // Action
+        discoverMovies({ sortBy: "popularity.desc", genre: "18" }), // Drama
+        discoverMovies({ sortBy: "popularity.desc", genre: "35" }), // Comedy
+      ]);
 
       if (
+        !trendingResponse?.results ||
         !popularResponse?.results ||
         !topRatedResponse?.results ||
-        !upcomingResponse?.results
+        !upcomingResponse?.results ||
+        !actionResponse?.results ||
+        !dramaResponse?.results ||
+        !comedyResponse?.results
       ) {
         throw new Error("Invalid response from movie API");
       }
 
+      const trending = trendingResponse.results.slice(0, 20);
+      setTrendingMovies(trending);
       setPopularMovies(popularResponse.results.slice(0, 20));
       setTopRatedMovies(topRatedResponse.results.slice(0, 20));
       setUpcomingMovies(upcomingResponse.results.slice(0, 20));
+      setActionMovies(actionResponse.results.slice(0, 20));
+      setDramaMovies(dramaResponse.results.slice(0, 20));
+      setComedyMovies(comedyResponse.results.slice(0, 20));
+
+      // Set featured movie (first trending movie with backdrop)
+      const movieWithBackdrop = trending.find((m) => m.backdrop_path);
+      if (movieWithBackdrop) {
+        setFeaturedMovie(movieWithBackdrop);
+      }
+
       setError(null); // Clear any previous errors
     } catch (err) {
       const errorMessage =
@@ -138,9 +180,13 @@ const Home: React.FC = () => {
 
       setError(errorMessage);
       // Set empty arrays as fallback
+      setTrendingMovies([]);
       setPopularMovies([]);
       setTopRatedMovies([]);
       setUpcomingMovies([]);
+      setActionMovies([]);
+      setDramaMovies([]);
+      setComedyMovies([]);
     } finally {
       setLoading(false);
     }
@@ -240,28 +286,81 @@ const Home: React.FC = () => {
       <Header onSearch={handleSearch} />
 
       <main className="main-content">
-        {/* Hero Section */}
+        {/* Enhanced Netflix-Style Hero Section */}
         <section className="hero-section">
+          {featuredMovie && featuredMovie.backdrop_path && (
+            <img
+              src={getImageUrl(
+                featuredMovie.backdrop_path,
+                IMAGE_SIZES.BACKDROP.LARGE
+              )}
+              alt={featuredMovie.title}
+              className="hero-backdrop"
+            />
+          )}
           <div className="container">
             <div className="hero-content">
-              <h1>Welcome to Moviez</h1>
-              <p>
-                Discover your next favorite movie from our extensive collection
-              </p>
-              <div className="hero-actions">
-                <button
-                  className="hero-btn hero-btn-primary"
-                  onClick={() => setShowFilters(!showFilters)}
-                >
-                  Browse Movies
-                </button>
-                <button
-                  className="hero-btn hero-btn-secondary"
-                  onClick={handleBrowsePopular}
-                >
-                  Popular Movies
-                </button>
-              </div>
+              {featuredMovie ? (
+                <>
+                  <h1>{featuredMovie.title}</h1>
+                  <div className="hero-rating">
+                    <div className="rating-badge">
+                      <FaStar />
+                      <span>{featuredMovie.vote_average.toFixed(1)}</span>
+                    </div>
+                    <span className="year">
+                      {new Date(featuredMovie.release_date).getFullYear()}
+                    </span>
+                  </div>
+                  <p>
+                    {featuredMovie.overview.length > 200
+                      ? featuredMovie.overview.substring(0, 200) + "..."
+                      : featuredMovie.overview}
+                  </p>
+                  <div className="hero-actions">
+                    <button
+                      className="hero-btn hero-btn-primary"
+                      onClick={() =>
+                        (window.location.href = `/movie/${featuredMovie.id}`)
+                      }
+                    >
+                      <FaPlay className="hero-btn-icon" />
+                      Play
+                    </button>
+                    <button
+                      className="hero-btn hero-btn-secondary"
+                      onClick={() =>
+                        (window.location.href = `/movie/${featuredMovie.id}`)
+                      }
+                    >
+                      <FaInfoCircle className="hero-btn-icon" />
+                      More Info
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h1>Welcome to Moviez</h1>
+                  <p>
+                    Discover your next favorite movie from our extensive
+                    collection
+                  </p>
+                  <div className="hero-actions">
+                    <button
+                      className="hero-btn hero-btn-primary"
+                      onClick={() => setShowFilters(!showFilters)}
+                    >
+                      Browse Movies
+                    </button>
+                    <button
+                      className="hero-btn hero-btn-secondary"
+                      onClick={handleBrowsePopular}
+                    >
+                      Popular Movies
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </section>
@@ -282,6 +381,45 @@ const Home: React.FC = () => {
         {/* Netflix-Style Movie Rows */}
         <div className="movie-rows">
           <div className="container">
+            {/* Trending Now Row */}
+            {trendingMovies.length > 0 && (
+              <div className="movie-row" ref={trendingSliderRef}>
+                <div className="row-header">
+                  <h2 className="row-title">Trending Now</h2>
+                  <div className="row-navigation">
+                    <button
+                      className="row-nav-btn"
+                      aria-label="Scroll left"
+                      onClick={() => scrollLeft(trendingSliderRef)}
+                      disabled={!canScrollLeft(trendingSliderRef)}
+                    >
+                      &#8249;
+                    </button>
+                    <button
+                      className="row-nav-btn"
+                      aria-label="Scroll right"
+                      onClick={() => scrollRight(trendingSliderRef)}
+                      disabled={!canScrollRight(trendingSliderRef)}
+                    >
+                      &#8250;
+                    </button>
+                  </div>
+                </div>
+                <div className="movie-row-container">
+                  <div className="movie-slider">
+                    {trendingMovies.map((movie) => (
+                      <MovieCard
+                        key={movie.id}
+                        movie={movie}
+                        isFavorite={favorites.includes(movie.id)}
+                        onToggleFavorite={handleToggleFavorite}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Popular Movies Row */}
             <div className="movie-row" ref={popularSliderRef}>
               <div className="row-header">
@@ -392,6 +530,123 @@ const Home: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {/* Action Movies Row */}
+            {actionMovies.length > 0 && (
+              <div className="movie-row" ref={actionSliderRef}>
+                <div className="row-header">
+                  <h2 className="row-title">Action & Adventure</h2>
+                  <div className="row-navigation">
+                    <button
+                      className="row-nav-btn"
+                      aria-label="Scroll left"
+                      onClick={() => scrollLeft(actionSliderRef)}
+                      disabled={!canScrollLeft(actionSliderRef)}
+                    >
+                      &#8249;
+                    </button>
+                    <button
+                      className="row-nav-btn"
+                      aria-label="Scroll right"
+                      onClick={() => scrollRight(actionSliderRef)}
+                      disabled={!canScrollRight(actionSliderRef)}
+                    >
+                      &#8250;
+                    </button>
+                  </div>
+                </div>
+                <div className="movie-row-container">
+                  <div className="movie-slider">
+                    {actionMovies.map((movie) => (
+                      <MovieCard
+                        key={movie.id}
+                        movie={movie}
+                        isFavorite={favorites.includes(movie.id)}
+                        onToggleFavorite={handleToggleFavorite}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Drama Movies Row */}
+            {dramaMovies.length > 0 && (
+              <div className="movie-row" ref={dramaSliderRef}>
+                <div className="row-header">
+                  <h2 className="row-title">Drama</h2>
+                  <div className="row-navigation">
+                    <button
+                      className="row-nav-btn"
+                      aria-label="Scroll left"
+                      onClick={() => scrollLeft(dramaSliderRef)}
+                      disabled={!canScrollLeft(dramaSliderRef)}
+                    >
+                      &#8249;
+                    </button>
+                    <button
+                      className="row-nav-btn"
+                      aria-label="Scroll right"
+                      onClick={() => scrollRight(dramaSliderRef)}
+                      disabled={!canScrollRight(dramaSliderRef)}
+                    >
+                      &#8250;
+                    </button>
+                  </div>
+                </div>
+                <div className="movie-row-container">
+                  <div className="movie-slider">
+                    {dramaMovies.map((movie) => (
+                      <MovieCard
+                        key={movie.id}
+                        movie={movie}
+                        isFavorite={favorites.includes(movie.id)}
+                        onToggleFavorite={handleToggleFavorite}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Comedy Movies Row */}
+            {comedyMovies.length > 0 && (
+              <div className="movie-row" ref={comedySliderRef}>
+                <div className="row-header">
+                  <h2 className="row-title">Comedy</h2>
+                  <div className="row-navigation">
+                    <button
+                      className="row-nav-btn"
+                      aria-label="Scroll left"
+                      onClick={() => scrollLeft(comedySliderRef)}
+                      disabled={!canScrollLeft(comedySliderRef)}
+                    >
+                      &#8249;
+                    </button>
+                    <button
+                      className="row-nav-btn"
+                      aria-label="Scroll right"
+                      onClick={() => scrollRight(comedySliderRef)}
+                      disabled={!canScrollRight(comedySliderRef)}
+                    >
+                      &#8250;
+                    </button>
+                  </div>
+                </div>
+                <div className="movie-row-container">
+                  <div className="movie-slider">
+                    {comedyMovies.map((movie) => (
+                      <MovieCard
+                        key={movie.id}
+                        movie={movie}
+                        isFavorite={favorites.includes(movie.id)}
+                        onToggleFavorite={handleToggleFavorite}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Search Results Section */}
             {initialSearchQuery && (
