@@ -209,11 +209,19 @@ const Home: React.FC = () => {
   const handleSearch = (query: string) => {
     if (query) {
       setSearchParams({ search: query });
+      fetchMovies(query);
     } else {
       setSearchParams({});
+      fetchMovies("");
     }
-    fetchMovies(query);
   };
+
+  // Watch for URL parameter changes and trigger search
+  useEffect(() => {
+    if (initialSearchQuery) {
+      fetchMovies(initialSearchQuery);
+    }
+  }, [initialSearchQuery]);
 
   // Handle filters
   const handleFiltersChange = (filters: MovieFilters) => {
