@@ -7,6 +7,17 @@ A modern, sleek streaming platform interface inspired by Netflix, built with Rea
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?style=for-the-badge&logo=typescript)
 ![Vite](https://img.shields.io/badge/Vite-7.1.6-646CFF?style=for-the-badge&logo=vite)
 
+## 🆕 Recent Improvements (2025)
+
+- **Scroll Navigation Fix:** Next/Previous (row-nav-btn) buttons in movie carousels now update their enabled/disabled state correctly, even after manual scrolling. This ensures smooth Netflix-style navigation on all devices.
+- **Filter Panel Update:** Movie filtering now supports multi-genre selection and advanced filter options (year, rating, language, runtime, adult content).
+- **Responsive Design Polishing:** Improved mobile and tablet experience with better touch targets, spacing, and adaptive layouts.
+- **Authentication Pages:** Added Login and Signup pages with validation and Netflix-inspired UI.
+- **Enhanced Movie Cards:** Movie cards now feature Play/Info buttons, hover effects, and improved favorite toggling.
+- **Codebase Refactoring:** TypeScript types and filter logic updated for maintainability and scalability.
+
+---
+
 ## ✨ Features
 
 ### 🎨 **Netflix-Inspired Design**

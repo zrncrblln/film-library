@@ -374,11 +374,12 @@ body {
     90deg,
     #ff0000 0%,
     #ff0000 50%,
-    #530000 50%,
+    #0f0f1e 50%,
     #0f0f1e 100%
   );
   border-radius: 18px;
   position: relative;
+  transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .theme-toggle-thumb {
@@ -416,7 +417,7 @@ body {
 }
 
 .theme-toggle-thumb.dark .theme-icon {
-  color: #ffd700;
+  color: #ff0000;
 }
 
 /* ===== MOBILE RESPONSIVE HEADER ===== */
