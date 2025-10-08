@@ -644,9 +644,9 @@ body {
 }
 
 .row-nav-btn {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: var(--text-color);
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -655,11 +655,17 @@ body {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  font-size: 1.5rem;
+  font-weight: bold;
+  z-index: 10;
+  margin: 0 5px;
 }
 
-.row-nav-btn:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+.row-nav-btn:not(:disabled):hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .movie-row-container {
@@ -2026,14 +2032,19 @@ a:focus {
 
 /* ===== DISABLED BUTTON STYLES ===== */
 .row-nav-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.2;
   cursor: not-allowed;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(128, 128, 128, 0.1);
+  border-color: transparent;
+  color: var(--secondary-color);
+  pointer-events: none;
+  transform: scale(0.9);
 }
 
 .row-nav-btn:disabled:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-  transform: none;
+  background-color: rgba(128, 128, 128, 0.1);
+  border-color: transparent;
+  transform: scale(0.9);
+  pointer-events: none;
+  box-shadow: none;
 }

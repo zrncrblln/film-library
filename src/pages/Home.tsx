@@ -304,6 +304,8 @@ const Home: React.FC = () => {
           left: -scrollAmount,
           behavior: "smooth",
         });
+        // Force a re-render after the scroll animation
+        setTimeout(() => setScrollState((prev) => prev + 1), 500);
       }
     }
   };
@@ -319,6 +321,8 @@ const Home: React.FC = () => {
           left: scrollAmount,
           behavior: "smooth",
         });
+        // Force a re-render after the scroll animation
+        setTimeout(() => setScrollState((prev) => prev + 1), 500);
       }
     }
   };
