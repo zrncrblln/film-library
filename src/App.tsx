@@ -3,6 +3,8 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Favorites from "./pages/Favorites";
 import MovieDetailsComponent from "./pages/MovieDetailsComponent";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import "./App.css";
 
 function App() {
@@ -14,6 +16,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/movie/:id" element={<MovieDetailsComponent />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
           </Routes>
         </div>
       </Router>

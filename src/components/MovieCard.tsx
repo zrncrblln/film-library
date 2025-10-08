@@ -1,6 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaHeart, FaStar } from "react-icons/fa";
+import { PlayIcon, InfoIcon } from "./icons";
 
 // Types
 import type { Movie } from "../types";
@@ -22,12 +23,26 @@ const MovieCard: React.FC<MovieCardProps> = ({
   isFavorite = false,
   onToggleFavorite,
 }) => {
+  const navigate = useNavigate();
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (onToggleFavorite) {
       onToggleFavorite(movie);
     }
+  };
+
+  const handlePlayClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/movie/${movie.id}?autoplay=true`);
+  };
+
+  const handleInfoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/movie/${movie.id}`);
   };
 
   // Simple calculations without memoization
@@ -58,15 +73,31 @@ const MovieCard: React.FC<MovieCardProps> = ({
             }}
           />
           <div className="movie-overlay">
-            <button
-              className={`favorite-btn ${isFavorite ? "active" : ""}`}
-              onClick={handleFavoriteClick}
-              aria-label={
-                isFavorite ? "Remove from favorites" : "Add to favorites"
-              }
-            >
-              <FaHeart />
-            </button>
+            <div className="movie-actions">
+              <button
+                className="action-btn play-btn"
+                onClick={handlePlayClick}
+                aria-label="Play movie trailer"
+              >
+                <PlayIcon />
+              </button>
+              <button
+                className={`favorite-btn ${isFavorite ? "active" : ""}`}
+                onClick={handleFavoriteClick}
+                aria-label={
+                  isFavorite ? "Remove from favorites" : "Add to favorites"
+                }
+              >
+                <FaHeart />
+              </button>
+              <button
+                className="action-btn info-btn"
+                onClick={handleInfoClick}
+                aria-label="More information"
+              >
+                <InfoIcon />
+              </button>
+            </div>
             <div className="movie-info">
               <h3 className="movie-title">{movie.title}</h3>
               <div className="movie-meta">

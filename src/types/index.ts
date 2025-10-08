@@ -119,10 +119,16 @@ export interface FavoriteMovie {
 
 // Filter interfaces
 export interface MovieFilters {
-  genre: string;
+  genres: string[];
   year: string;
   minRating: string;
   sortBy: string;
+  language: string;
+  runtime: {
+    min: string;
+    max: string;
+  };
+  includeAdult: boolean;
 }
 
 // API Response interfaces

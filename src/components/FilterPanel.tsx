@@ -1,8 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { FaFilter, FaTimes } from "react-icons/fa";
+import { FaFilter, FaTimes, FaCheck } from "react-icons/fa";
 import type { Genre, MovieFilters } from "../types";
 import { getGenres } from "../services/movieApi";
 import { SORT_OPTIONS, RATING_FILTERS, SEARCH_PARAMS } from "../constants/api";
+
+// Common languages in movies
+const LANGUAGES = [
+  { code: "en", name: "English" },
+  { code: "es", name: "Spanish" },
+  { code: "fr", name: "French" },
+  { code: "de", name: "German" },
+  { code: "it", name: "Italian" },
+  { code: "ja", name: "Japanese" },
+  { code: "ko", name: "Korean" },
+  { code: "zh", name: "Chinese" },
+  { code: "hi", name: "Hindi" },
+  { code: "ru", name: "Russian" },
+];
 
 interface FilterPanelProps {
   onFiltersChange: (filters: MovieFilters) => void;
@@ -18,10 +32,16 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   const [genres, setGenres] = useState<Genre[]>([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<MovieFilters>({
-    genre: "",
+    genres: [],
     year: "",
     minRating: "",
     sortBy: "popularity.desc",
+    language: "",
+    runtime: {
+      min: "",
+      max: "",
+    },
+    includeAdult: false,
   });
 
   useEffect(() => {
@@ -40,24 +60,54 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     fetchGenres();
   }, []);
 
-  const handleFilterChange = (key: keyof MovieFilters, value: string) => {
+  const handleFilterChange = (
+    key: keyof MovieFilters,
+    value: string | string[] | boolean | { min: string; max: string }
+  ) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
     onFiltersChange(newFilters);
   };
 
+  const handleGenreToggle = (genreId: string) => {
+    const newGenres = filters.genres.includes(genreId)
+      ? filters.genres.filter((id) => id !== genreId)
+      : [...filters.genres, genreId];
+    handleFilterChange("genres", newGenres);
+  };
+
+  const handleRuntimeChange = (type: "min" | "max", value: string) => {
+    handleFilterChange("runtime", {
+      ...filters.runtime,
+      [type]: value,
+    });
+  };
+
   const clearFilters = () => {
     const clearedFilters: MovieFilters = {
-      genre: "",
+      genres: [],
       year: "",
       minRating: "",
       sortBy: "popularity.desc",
+      language: "",
+      runtime: {
+        min: "",
+        max: "",
+      },
+      includeAdult: false,
     };
     setFilters(clearedFilters);
     onFiltersChange(clearedFilters);
   };
 
-  const hasActiveFilters = filters.genre || filters.year || filters.minRating;
+  const hasActiveFilters =
+    filters.genres.length > 0 ||
+    filters.year ||
+    filters.minRating ||
+    filters.language ||
+    filters.runtime.min ||
+    filters.runtime.max ||
+    filters.includeAdult;
 
   if (!isOpen) {
     return (
@@ -108,6 +158,32 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       </div>
 
       <div className="filter-content">
+        {/* Genre Multi-select */}
+        <div className="filter-group filter-group-genres">
+          <label>Genres:</label>
+          <div
+            className="genre-tags"
+            role="group"
+            aria-label="Select movie genres"
+          >
+            {genres.map((genre) => (
+              <button
+                key={genre.id}
+                onClick={() => handleGenreToggle(genre.id.toString())}
+                className={`genre-tag ${
+                  filters.genres.includes(genre.id.toString()) ? "active" : ""
+                }`}
+                aria-pressed={filters.genres.includes(genre.id.toString())}
+              >
+                {genre.name}
+                {filters.genres.includes(genre.id.toString()) && (
+                  <FaCheck className="check-icon" />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Sort By */}
         <div className="filter-group">
           <label htmlFor="sortBy">Sort By:</label>
@@ -115,6 +191,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             id="sortBy"
             value={filters.sortBy}
             onChange={(e) => handleFilterChange("sortBy", e.target.value)}
+            className="netflix-select"
             aria-describedby="sortBy-desc"
           >
             <option value={SORT_OPTIONS.POPULARITY_DESC}>Most Popular</option>
@@ -126,31 +203,50 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             <option value={SORT_OPTIONS.TITLE_ASC}>Title A-Z</option>
             <option value={SORT_OPTIONS.TITLE_DESC}>Title Z-A</option>
           </select>
-          <span id="sortBy-desc" className="sr-only">
-            Choose how to sort the movie results
-          </span>
         </div>
 
-        {/* Genre Filter */}
+        {/* Language Filter */}
         <div className="filter-group">
-          <label htmlFor="genre">Genre:</label>
+          <label htmlFor="language">Language:</label>
           <select
-            id="genre"
-            value={filters.genre}
-            onChange={(e) => handleFilterChange("genre", e.target.value)}
-            disabled={loading}
-            aria-describedby="genre-desc"
+            id="language"
+            value={filters.language}
+            onChange={(e) => handleFilterChange("language", e.target.value)}
+            className="netflix-select"
           >
-            <option value="">All Genres</option>
-            {genres.map((genre) => (
-              <option key={genre.id} value={genre.id.toString()}>
-                {genre.name}
+            <option value="">Any Language</option>
+            {LANGUAGES.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.name}
               </option>
             ))}
           </select>
-          <span id="genre-desc" className="sr-only">
-            Filter movies by genre
-          </span>
+        </div>
+
+        {/* Runtime Range */}
+        <div className="filter-group filter-group-runtime">
+          <label>Runtime (minutes):</label>
+          <div className="runtime-inputs">
+            <input
+              type="number"
+              value={filters.runtime.min}
+              onChange={(e) => handleRuntimeChange("min", e.target.value)}
+              placeholder="Min"
+              min="0"
+              max="400"
+              className="netflix-input"
+            />
+            <span className="runtime-separator">to</span>
+            <input
+              type="number"
+              value={filters.runtime.max}
+              onChange={(e) => handleRuntimeChange("max", e.target.value)}
+              placeholder="Max"
+              min="0"
+              max="400"
+              className="netflix-input"
+            />
+          </div>
         </div>
 
         {/* Year Filter */}
@@ -164,21 +260,18 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             placeholder="e.g., 2023"
             min={SEARCH_PARAMS.MIN_YEAR}
             max={SEARCH_PARAMS.MAX_YEAR}
-            aria-describedby="year-desc"
+            className="netflix-input"
           />
-          <span id="year-desc" className="sr-only">
-            Filter movies by release year
-          </span>
         </div>
 
-        {/* Minimum Rating Filter */}
+        {/* Rating Filter */}
         <div className="filter-group">
           <label htmlFor="minRating">Minimum Rating:</label>
           <select
             id="minRating"
             value={filters.minRating}
             onChange={(e) => handleFilterChange("minRating", e.target.value)}
-            aria-describedby="rating-desc"
+            className="netflix-select"
           >
             <option value={RATING_FILTERS.ANY}>Any Rating</option>
             <option value={RATING_FILTERS.EXCELLENT}>8+ Stars</option>
@@ -187,10 +280,57 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             <option value={RATING_FILTERS.AVERAGE}>5+ Stars</option>
             <option value={RATING_FILTERS.BELOW_AVERAGE}>4+ Stars</option>
           </select>
-          <span id="rating-desc" className="sr-only">
-            Filter movies by minimum rating
-          </span>
         </div>
+
+        {/* Include Adult Content */}
+        <div className="filter-group">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={filters.includeAdult}
+              onChange={(e) =>
+                handleFilterChange("includeAdult", e.target.checked)
+              }
+              className="netflix-checkbox"
+            />
+            <span>Include Adult Content</span>
+          </label>
+        </div>
+
+        {/* Active Filters */}
+        {hasActiveFilters && (
+          <div className="active-filters">
+            <h4>Active Filters:</h4>
+            <div className="filter-tags">
+              {filters.genres.map((genreId) => {
+                const genre = genres.find((g) => g.id.toString() === genreId);
+                return genre ? (
+                  <span key={genreId} className="filter-tag">
+                    {genre.name}
+                    <button
+                      onClick={() => handleGenreToggle(genreId)}
+                      aria-label={`Remove ${genre.name} filter`}
+                    >
+                      <FaTimes />
+                    </button>
+                  </span>
+                ) : null;
+              })}
+              {filters.year && (
+                <span className="filter-tag">
+                  Year: {filters.year}
+                  <button
+                    onClick={() => handleFilterChange("year", "")}
+                    aria-label="Remove year filter"
+                  >
+                    <FaTimes />
+                  </button>
+                </span>
+              )}
+              {/* Add more active filter tags as needed */}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

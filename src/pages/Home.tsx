@@ -34,8 +34,9 @@ const Home: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-
-  // Refs for movie sliders
+  // Used to force re-render on scroll
+  const [scrollState, setScrollState] = useState(0);
+  // Refs for movie sliders (move above useEffect for correct order)
   const trendingSliderRef = useRef<HTMLDivElement>(null);
   const popularSliderRef = useRef<HTMLDivElement>(null);
   const topRatedSliderRef = useRef<HTMLDivElement>(null);
@@ -43,6 +44,42 @@ const Home: React.FC = () => {
   const actionSliderRef = useRef<HTMLDivElement>(null);
   const dramaSliderRef = useRef<HTMLDivElement>(null);
   const comedySliderRef = useRef<HTMLDivElement>(null);
+
+  // Attach scroll listeners to all slider refs
+  useEffect(() => {
+    const sliderRefs = [
+      trendingSliderRef,
+      popularSliderRef,
+      topRatedSliderRef,
+      upcomingSliderRef,
+      actionSliderRef,
+      dramaSliderRef,
+      comedySliderRef,
+    ];
+    const listeners: Array<() => void> = [];
+    sliderRefs.forEach((ref) => {
+      if (ref.current) {
+        const slider = ref.current.querySelector(".movie-slider");
+        if (slider) {
+          const handler = () => setScrollState((s) => s + 1);
+          slider.addEventListener("scroll", handler);
+          listeners.push(() => slider.removeEventListener("scroll", handler));
+        }
+      }
+    });
+    return () => {
+      listeners.forEach((remove) => remove());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    trendingSliderRef.current,
+    popularSliderRef.current,
+    topRatedSliderRef.current,
+    upcomingSliderRef.current,
+    actionSliderRef.current,
+    dramaSliderRef.current,
+    comedySliderRef.current,
+  ]);
 
   // Get initial search query from URL params
   const initialSearchQuery = searchParams.get("search") || "";
@@ -56,10 +93,13 @@ const Home: React.FC = () => {
   const fetchMovies = async (
     searchQuery: string = "",
     filters: MovieFilters = {
-      genre: "",
+      genres: [],
       year: "",
       minRating: "",
       sortBy: "popularity.desc",
+      language: "",
+      runtime: { min: "", max: "" },
+      includeAdult: false,
     }
   ) => {
     try {
@@ -74,17 +114,29 @@ const Home: React.FC = () => {
         // Use discover endpoint with filters
         const discoverParams: {
           sortBy?: string;
-          genre?: string;
+          genres?: string;
           year?: number;
           minRating?: number;
+          language?: string;
+          runtimeMin?: number;
+          runtimeMax?: number;
+          includeAdult?: boolean;
         } = {
           sortBy: filters.sortBy,
         };
 
-        if (filters.genre) discoverParams.genre = filters.genre;
+        if (filters.genres && filters.genres.length > 0)
+          discoverParams.genres = filters.genres.join(",");
         if (filters.year) discoverParams.year = parseInt(filters.year);
         if (filters.minRating)
           discoverParams.minRating = parseInt(filters.minRating);
+        if (filters.language) discoverParams.language = filters.language;
+        if (filters.runtime && filters.runtime.min)
+          discoverParams.runtimeMin = parseInt(filters.runtime.min);
+        if (filters.runtime && filters.runtime.max)
+          discoverParams.runtimeMax = parseInt(filters.runtime.max);
+        if (typeof filters.includeAdult === "boolean")
+          discoverParams.includeAdult = filters.includeAdult;
 
         response = await discoverMovies(discoverParams);
       }
@@ -272,12 +324,16 @@ const Home: React.FC = () => {
   };
 
   // Check if scrolling is possible
+
+  // Allow a small margin for floating point errors
+  const SCROLL_MARGIN = 4;
+
   const canScrollLeft = (sliderRef: React.RefObject<HTMLDivElement | null>) => {
     if (sliderRef.current) {
       const slider = sliderRef.current.querySelector(
         ".movie-slider"
       ) as HTMLDivElement;
-      return slider ? slider.scrollLeft > 0 : false;
+      return slider ? slider.scrollLeft > SCROLL_MARGIN : false;
     }
     return false;
   };
@@ -290,7 +346,8 @@ const Home: React.FC = () => {
         ".movie-slider"
       ) as HTMLDivElement;
       return slider
-        ? slider.scrollLeft < slider.scrollWidth - slider.clientWidth - 1
+        ? slider.scrollLeft <
+            slider.scrollWidth - slider.clientWidth - SCROLL_MARGIN
         : false;
     }
     return false;

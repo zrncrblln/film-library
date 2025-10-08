@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaHeart, FaHome, FaSearch } from "react-icons/fa";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
@@ -19,6 +19,17 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 50;
+      setIsScrolled(scrolled);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -72,7 +83,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   } mode`;
 
   return (
-    <header className="movie-header">
+    <header className={`movie-header ${isScrolled ? "scrolled" : ""}`}>
       <div className="container">
         <div className="header-content">
           {/* Logo */}
