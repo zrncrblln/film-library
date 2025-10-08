@@ -72,7 +72,6 @@ const Favorites: React.FC = () => {
         <div className="container">
           <section className="favorites-section">
             <div className="section-header">
-              <h1>My Favorites</h1>
               <p>
                 {favorites.length === 0
                   ? "You haven't added any favorites yet."

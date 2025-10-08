@@ -441,8 +441,79 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        {/* Filters Panel */}
-        {showFilters && (
+        {/* Search Results Section */}
+        {initialSearchQuery && (
+          <section className="search-results-section">
+            <div className="container">
+              <div className="search-results-header">
+                <h2>Search Results for "{initialSearchQuery}"</h2>
+                <div className="results-meta">
+                  <span className="results-count">
+                    {movies.length} {movies.length === 1 ? "result" : "results"}{" "}
+                    found
+                  </span>
+                  {movies.length > 0 && (
+                    <button
+                      className="filter-toggle-btn-main"
+                      onClick={() => setShowFilters(!showFilters)}
+                    >
+                      Filter Results
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Filters Panel */}
+              {showFilters && (
+                <div className="search-filters-panel">
+                  <FilterPanel
+                    onFiltersChange={handleFiltersChange}
+                    isOpen={showFilters}
+                    onToggle={() => setShowFilters(false)}
+                  />
+                </div>
+              )}
+
+              <div className="search-results-grid">
+                {loading ? (
+                  <div className="loading-container">
+                    <div className="loading-spinner"></div>
+                    <p>Searching for movies...</p>
+                  </div>
+                ) : error ? (
+                  <div className="error-container">
+                    <p>{error}</p>
+                    <button
+                      className="retry-btn"
+                      onClick={() => fetchMovies(initialSearchQuery)}
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                ) : movies.length === 0 ? (
+                  <div className="no-results-container">
+                    <h3>No movies found</h3>
+                    <p>Try adjusting your search or filters</p>
+                  </div>
+                ) : (
+                  <div className="movies-grid">
+                    {movies.map((movie) => (
+                      <MovieCard
+                        key={movie.id}
+                        movie={movie}
+                        isFavorite={favorites.includes(movie.id)}
+                        onToggleFavorite={handleToggleFavorite}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Filters Panel for Browse */}
+        {!initialSearchQuery && showFilters && (
           <section className="filters-section">
             <div className="container">
               <FilterPanel
