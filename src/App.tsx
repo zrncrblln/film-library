@@ -105,7 +105,11 @@ export default function App() {
   const getFilteredAndSortedMovies = () => {
     let filtered = searchQuery
       ? searchMovies
-      : [...popularMovies, ...trendingMovies, ...topRatedMovies];
+      : deduplicateMovies([
+          ...popularMovies,
+          ...trendingMovies,
+          ...topRatedMovies,
+        ]);
 
     if (selectedGenres.length > 0) {
       filtered = filtered.filter((movie) =>
@@ -129,7 +133,20 @@ export default function App() {
     );
   };
 
-  const allMovies = [...popularMovies, ...trendingMovies, ...topRatedMovies];
+  // Helper function to deduplicate movies by ID
+  const deduplicateMovies = (movies: Movie[]): Movie[] => {
+    const movieMap = new Map<number, Movie>();
+    movies.forEach((movie) => {
+      movieMap.set(movie.id, movie);
+    });
+    return Array.from(movieMap.values());
+  };
+
+  const allMovies = deduplicateMovies([
+    ...popularMovies,
+    ...trendingMovies,
+    ...topRatedMovies,
+  ]);
   const watchlistMovies = allMovies.filter((m) => watchlist.includes(m.id));
   const favoritesMovies = allMovies.filter((m) => favorites.includes(m.id));
   const watchedMovies = allMovies.filter((m) => watched.includes(m.id));
@@ -150,6 +167,14 @@ export default function App() {
               />
             )}
 
+            <FilterBar
+              selectedGenres={selectedGenres}
+              onGenreToggle={handleGenreToggle}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              genres={genres.map((g) => ({ id: g.id, name: g.name }))}
+            />
+
             <div className="mt-8">
               {loading ? (
                 <div className="flex justify-center items-center py-20">
@@ -162,7 +187,9 @@ export default function App() {
                 <>
                   <MovieRow
                     title="Trending Now"
-                    movies={trendingMovies}
+                    movies={getFilteredAndSortedMovies()
+                      .filter((m) => trendingMovies.some((t) => t.id === m.id))
+                      .slice(0, 10)}
                     onSelectMovie={handleSelectMovie}
                     watchlist={watchlist}
                     favorites={favorites}
@@ -172,7 +199,9 @@ export default function App() {
 
                   <MovieRow
                     title="New Releases"
-                    movies={newReleases}
+                    movies={getFilteredAndSortedMovies()
+                      .filter((m) => newReleases.some((n) => n.id === m.id))
+                      .slice(0, 10)}
                     onSelectMovie={handleSelectMovie}
                     watchlist={watchlist}
                     favorites={favorites}
@@ -182,7 +211,9 @@ export default function App() {
 
                   <MovieRow
                     title="Top Rated"
-                    movies={topRatedMovies}
+                    movies={getFilteredAndSortedMovies()
+                      .filter((m) => topRatedMovies.some((t) => t.id === m.id))
+                      .slice(0, 10)}
                     onSelectMovie={handleSelectMovie}
                     watchlist={watchlist}
                     favorites={favorites}
@@ -192,7 +223,7 @@ export default function App() {
 
                   <MovieRow
                     title="All Movies"
-                    movies={allMovies}
+                    movies={getFilteredAndSortedMovies().slice(0, 20)}
                     onSelectMovie={handleSelectMovie}
                     watchlist={watchlist}
                     favorites={favorites}
