@@ -8,8 +8,10 @@
 - [x] Update FilterBar to use dynamic genres from API
 - [x] Test API integration and verify UI remains unchanged
 - [x] Fix loading states and null checks for better UX
+- [x] Fix movie card uniformity - ensure consistent aspect ratios and sizing
 
 ## Progress
 
 - [x] Add fallback poster image in tmdb-api.ts for movies without poster_path
 - [x] Update search view in App.tsx to use fixed-width containers for movie cards to maintain consistent aspect ratios
+- [x] Update poster URLs in movie-data.ts to use cropped Unsplash images for uniform 2:3 aspect ratio

@@ -29,10 +29,10 @@ export function MovieCard({
         <img
           src={movie.poster}
           alt={movie.title}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+          className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-        
+
         <div className="absolute top-2 right-2 flex gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           {onToggleFavorites && (
             <Button
@@ -41,10 +41,14 @@ export function MovieCard({
               className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-accent"
               onClick={(e) => {
                 e.stopPropagation();
-                onToggleFavorites(movie);
+                onToggleFavorites?.(movie);
               }}
             >
-              <Heart className={`h-4 w-4 ${isInFavorites ? "fill-accent text-accent" : ""}`} />
+              <Heart
+                className={`h-4 w-4 ${
+                  isInFavorites ? "fill-accent text-accent" : ""
+                }`}
+              />
             </Button>
           )}
           {onToggleWatchlist && (
@@ -54,7 +58,7 @@ export function MovieCard({
               className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-primary"
               onClick={(e) => {
                 e.stopPropagation();
-                onToggleWatchlist(movie);
+                onToggleWatchlist?.(movie);
               }}
             >
               {isInWatchlist ? (
@@ -65,7 +69,7 @@ export function MovieCard({
             </Button>
           )}
         </div>
-        
+
         <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <div className="flex items-center gap-2 mb-2">
             <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />

@@ -97,7 +97,26 @@ export const useMovies = () => {
     try {
       setSearchLoading(true);
       const results = await fetchSearchMovies(query);
-      const transformed = results.map((m) => transformToMovie(m));
+      const transformed = results.map((m) => ({
+        id: m.id,
+        title: m.title,
+        year: new Date(m.release_date).getFullYear(),
+        duration: m.runtime,
+        rating: m.vote_average,
+        genre: m.genre_ids
+          .map((id) => genres.find((g) => g.id === id)?.name || "")
+          .filter(Boolean),
+        description: m.overview,
+        poster: m.poster_path,
+        backdrop: m.backdrop_path,
+        cast: m.cast,
+        director: m.director,
+        language: m.original_language.toUpperCase(),
+        trending: false,
+        topRated: false,
+        newRelease:
+          new Date(m.release_date).getFullYear() === new Date().getFullYear(),
+      }));
       setSearchMovies(transformed);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to search movies");

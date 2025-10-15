@@ -91,7 +91,8 @@ export default function App() {
     setDialogOpen(true);
   };
 
-  const featuredMovie = trendingMovies[0] || popularMovies[0] || null;
+  const featuredMovie =
+    trendingMovies[0] || popularMovies[0] || topRatedMovies[0] || null;
   const newReleases = [
     ...popularMovies,
     ...trendingMovies,
@@ -213,7 +214,7 @@ export default function App() {
               onGenreToggle={handleGenreToggle}
               sortBy={sortBy}
               onSortChange={setSortBy}
-              genres={genres}
+              genres={genres.map((g) => ({ id: g.id, name: g.name }))}
             />
 
             {searchLoading ? (
