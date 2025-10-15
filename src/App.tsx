@@ -27,6 +27,7 @@ export default function App() {
     genres,
     loading,
     searchLoading,
+    error,
     searchMoviesAsync,
   } = useMovies();
 
@@ -57,9 +58,11 @@ export default function App() {
   }, [watched]);
 
   useEffect(() => {
-    if (searchQuery) {
+    const debounceTimer = setTimeout(() => {
       searchMoviesAsync(searchQuery);
-    }
+    }, 500); // 500ms debounce delay
+
+    return () => clearTimeout(debounceTimer);
   }, [searchQuery, searchMoviesAsync]);
 
   const toggleWatchlist = (movie: Movie) => {
@@ -249,14 +252,21 @@ export default function App() {
                   ))}
                 </div>
 
-                {getFilteredAndSortedMovies().length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-20 text-center">
-                    <h3 className="mb-2">No movies found</h3>
-                    <p className="text-muted-foreground">
-                      Try adjusting your search or filters
-                    </p>
-                  </div>
-                )}
+                {getFilteredAndSortedMovies().length === 0 &&
+                  !searchLoading && (
+                    <div className="flex flex-col items-center justify-center py-20 text-center">
+                      <h3 className="mb-2">
+                        {searchQuery
+                          ? "No movies found"
+                          : "Start searching for movies"}
+                      </h3>
+                      <p className="text-muted-foreground">
+                        {searchQuery
+                          ? "Try adjusting your search or filters"
+                          : "Enter a movie title to begin searching"}
+                      </p>
+                    </div>
+                  )}
               </>
             )}
           </div>

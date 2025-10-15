@@ -1,17 +1,7 @@
-# TODO: Implement TMDB API Integration
+# TODO: Fix Search Functionality
 
-## Tasks
-
-- [x] Add fetchSearchMovies function to tmdb-api.ts
-- [x] Update useMovies.ts to handle search query and return searched movies
-- [x] Modify App.tsx to use useMovies hook for all data, including search
-- [x] Update FilterBar to use dynamic genres from API
-- [x] Test API integration and verify UI remains unchanged
-- [x] Fix loading states and null checks for better UX
-- [x] Fix movie card uniformity - ensure consistent aspect ratios and sizing
-
-## Progress
-
-- [x] Add fallback poster image in tmdb-api.ts for movies without poster_path
-- [x] Update search view in App.tsx to use fixed-width containers for movie cards to maintain consistent aspect ratios
-- [x] Update poster URLs in movie-data.ts to use cropped Unsplash images for uniform 2:3 aspect ratio
+- [x] Add debouncing logic to search input in `src/App.tsx` (500ms delay to prevent excessive API calls)
+- [x] Modify `searchMoviesAsync` in `src/lib/useMovies.ts` to skip empty queries and improve error handling
+- [x] Update search view in `src/App.tsx` for better feedback (e.g., "No results" message if searchMovies is empty after search)
+- [x] Test the search functionality by running the app and verifying debounced API calls and correct display of results
+- [x] Fix screen blinking and scrolling issues by making searchMoviesAsync stable with useCallback
