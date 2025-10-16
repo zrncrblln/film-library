@@ -11,5 +11,5 @@
 - [x] Create a helper function in `src/App.tsx` to deduplicate movies by ID using a Map
 - [x] Update `allMovies` in `src/App.tsx` to use the deduplicated combined list
 - [x] Update `getFilteredAndSortedMovies` in `src/App.tsx` to use deduplicated lists for non-search cases
-- [ ] Test the app to verify no duplicates appear in the UI
+- [x] Test the app to verify no duplicates appear in the UI
 - [x] Update TODO.md with the completed task
