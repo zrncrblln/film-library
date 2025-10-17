@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
 export default defineConfig({
+  base: "/film-library/",
   plugins: [react()],
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
@@ -25,10 +26,10 @@ export default defineConfig({
       "@radix-ui/react-tabs@1.1.3": "@radix-ui/react-tabs",
       "@radix-ui/react-switch@1.1.3": "@radix-ui/react-switch",
       "@radix-ui/react-slot@1.1.2": "@radix-ui/react-slot",
-      "@radix-ui/react-slider@1.2.3": "@radix-ui/react-slider",
       "@radix-ui/react-separator@1.1.2": "@radix-ui/react-separator",
       "@radix-ui/react-select@2.1.6": "@radix-ui/react-select",
       "@radix-ui/react-scroll-area@1.2.3": "@radix-ui/react-scroll-area",
+      "@radix-ui/react-slider@1.2.3": "@radix-ui/react-slider",
       "@radix-ui/react-radio-group@1.2.3": "@radix-ui/react-radio-group",
       "@radix-ui/react-progress@1.1.2": "@radix-ui/react-progress",
       "@radix-ui/react-popover@1.1.6": "@radix-ui/react-popover",
