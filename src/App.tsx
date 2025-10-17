@@ -34,15 +34,18 @@ export default function App() {
   const [watchlist, setWatchlist] = useState<number[]>([]);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [watched, setWatched] = useState<number[]>([]);
+  const [movieStore, setMovieStore] = useState<{ [key: number]: Movie }>({});
 
   useEffect(() => {
     const savedWatchlist = localStorage.getItem("moviez-watchlist");
     const savedFavorites = localStorage.getItem("moviez-favorites");
     const savedWatched = localStorage.getItem("moviez-watched");
+    const savedMovieStore = localStorage.getItem("moviez-movie-store");
 
     if (savedWatchlist) setWatchlist(JSON.parse(savedWatchlist));
     if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
     if (savedWatched) setWatched(JSON.parse(savedWatched));
+    if (savedMovieStore) setMovieStore(JSON.parse(savedMovieStore));
   }, []);
 
   useEffect(() => {
@@ -58,6 +61,10 @@ export default function App() {
   }, [watched]);
 
   useEffect(() => {
+    localStorage.setItem("moviez-movie-store", JSON.stringify(movieStore));
+  }, [movieStore]);
+
+  useEffect(() => {
     const debounceTimer = setTimeout(() => {
       searchMoviesAsync(searchQuery);
     }, 500); // 500ms debounce delay
@@ -66,6 +73,7 @@ export default function App() {
   }, [searchQuery, searchMoviesAsync]);
 
   const toggleWatchlist = (movie: Movie) => {
+    setMovieStore((prev) => ({ ...prev, [movie.id]: movie }));
     setWatchlist((prev) =>
       prev.includes(movie.id)
         ? prev.filter((id) => id !== movie.id)
@@ -74,6 +82,7 @@ export default function App() {
   };
 
   const toggleFavorites = (movie: Movie) => {
+    setMovieStore((prev) => ({ ...prev, [movie.id]: movie }));
     setFavorites((prev) =>
       prev.includes(movie.id)
         ? prev.filter((id) => id !== movie.id)
@@ -82,6 +91,7 @@ export default function App() {
   };
 
   const toggleWatched = (movie: Movie) => {
+    setMovieStore((prev) => ({ ...prev, [movie.id]: movie }));
     setWatched((prev) =>
       prev.includes(movie.id)
         ? prev.filter((id) => id !== movie.id)
@@ -147,9 +157,9 @@ export default function App() {
     ...trendingMovies,
     ...topRatedMovies,
   ]);
-  const watchlistMovies = allMovies.filter((m) => watchlist.includes(m.id));
-  const favoritesMovies = allMovies.filter((m) => favorites.includes(m.id));
-  const watchedMovies = allMovies.filter((m) => watched.includes(m.id));
+  const watchlistMovies = watchlist.map((id) => movieStore[id]).filter(Boolean);
+  const favoritesMovies = favorites.map((id) => movieStore[id]).filter(Boolean);
+  const watchedMovies = watched.map((id) => movieStore[id]).filter(Boolean);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
