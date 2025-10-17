@@ -6,15 +6,15 @@
 - [x] Created 404.html in build directory to handle client-side routing for SPAs on GitHub Pages
 - [x] Rebuilt the project with updated base path
 - [x] Verified build output includes correct base paths in assets
+- [x] Committed and pushed changes to GitHub
+- [x] Added GitHub Actions workflow for automatic deployment
 
 ## Next Steps
 
-- [ ] Commit and push the changes (including the build folder) to GitHub
-- [ ] In GitHub repository settings, go to Pages section
-- [ ] Set Source: "Deploy from a branch"
-- [ ] Set Branch: main (or your default branch)
-- [ ] Set Folder: /build
-- [ ] Save and wait for deployment
+- [ ] Go to GitHub repository settings → Pages section
+- [ ] Set Source: "GitHub Actions"
+- [ ] The workflow will automatically deploy on each push to main
+- [ ] Wait for the Actions workflow to complete (check Actions tab)
 - [ ] Test the live deployment at https://zrncrblln.github.io/film-library/
 - [ ] If still blank, check browser console for errors and verify assets are loading correctly
 
