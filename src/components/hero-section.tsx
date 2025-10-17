@@ -8,6 +8,8 @@ interface HeroSectionProps {
   isInWatchlist: boolean;
   onToggleWatchlist: () => void;
   onViewDetails: () => void;
+  onPlayTrailer: () => void;
+  loadingTrailer: boolean;
 }
 
 export function HeroSection({
@@ -15,6 +17,8 @@ export function HeroSection({
   isInWatchlist,
   onToggleWatchlist,
   onViewDetails,
+  onPlayTrailer,
+  loadingTrailer,
 }: HeroSectionProps) {
   return (
     <div className="relative h-[70vh] w-full overflow-hidden">
@@ -25,7 +29,7 @@ export function HeroSection({
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
       </div>
-      
+
       <div className="relative z-10 flex h-full items-end pb-16 md:pb-20">
         <div className="px-4 md:px-8 max-w-2xl">
           <div className="flex flex-wrap gap-2 mb-3">
@@ -39,25 +43,30 @@ export function HeroSection({
               </Badge>
             ))}
           </div>
-          
+
           <h1 className="mb-4 text-4xl md:text-6xl">{movie.title}</h1>
-          
+
           <div className="mb-4 flex items-center gap-4 text-muted-foreground">
-            <span className="flex items-center gap-1">
-              ★ {movie.rating}
-            </span>
+            <span className="flex items-center gap-1">★ {movie.rating}</span>
             <span>{movie.year}</span>
-            <span>{Math.floor(movie.duration / 60)}h {movie.duration % 60}m</span>
+            <span>
+              {Math.floor(movie.duration / 60)}h {movie.duration % 60}m
+            </span>
           </div>
-          
+
           <p className="mb-6 max-w-xl text-foreground/90 line-clamp-3">
             {movie.description}
           </p>
-          
+
           <div className="flex flex-wrap gap-3">
-            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button
+              size="lg"
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={onPlayTrailer}
+              disabled={loadingTrailer}
+            >
               <Play className="mr-2 h-5 w-5 fill-current" />
-              Play Trailer
+              {loadingTrailer ? "Loading..." : "Play Trailer"}
             </Button>
             <Button
               size="lg"

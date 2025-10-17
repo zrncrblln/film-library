@@ -127,3 +127,19 @@ export const getGenreNames = (
     .map((id) => genres.find((g) => g.id === id)?.name)
     .filter(Boolean) as string[];
 };
+
+export const fetchMovieTrailer = async (
+  movieId: number
+): Promise<string | null> => {
+  const response = await fetch(
+    `${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}&language=en-US`
+  );
+  if (!response.ok) return null;
+
+  const data = await response.json();
+  const trailer = data.results.find(
+    (video: any) => video.type === "Trailer" && video.site === "YouTube"
+  );
+
+  return trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : null;
+};

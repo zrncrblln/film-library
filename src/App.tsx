@@ -9,6 +9,7 @@ import { LibraryView } from "./components/library-view";
 import { ProfileView } from "./components/profile-view";
 import { useMovies } from "./lib/useMovies";
 import { Movie } from "./lib/movie-data";
+import { fetchMovieTrailer } from "./lib/tmdb-api";
 
 export default function App() {
   const [activeView, setActiveView] = useState("home");
@@ -35,6 +36,8 @@ export default function App() {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [watched, setWatched] = useState<number[]>([]);
   const [movieStore, setMovieStore] = useState<{ [key: number]: Movie }>({});
+  const [trailerUrl, setTrailerUrl] = useState<string | null>(null);
+  const [loadingTrailer, setLoadingTrailer] = useState(false);
 
   useEffect(() => {
     const savedWatchlist = localStorage.getItem("moviez-watchlist");
@@ -102,6 +105,23 @@ export default function App() {
   const handleSelectMovie = (movie: Movie) => {
     setSelectedMovie(movie);
     setDialogOpen(true);
+  };
+
+  const handlePlayTrailer = async (movie: Movie) => {
+    setLoadingTrailer(true);
+    try {
+      const trailer = await fetchMovieTrailer(movie.id);
+      if (trailer) {
+        window.open(trailer, "_blank");
+      } else {
+        alert("No trailer available for this movie");
+      }
+    } catch (error) {
+      console.error("Failed to fetch trailer:", error);
+      alert("Failed to load trailer. Please try again.");
+    } finally {
+      setLoadingTrailer(false);
+    }
   };
 
   const featuredMovie =
@@ -174,6 +194,8 @@ export default function App() {
                 isInWatchlist={watchlist.includes(featuredMovie.id)}
                 onToggleWatchlist={() => toggleWatchlist(featuredMovie)}
                 onViewDetails={() => handleSelectMovie(featuredMovie)}
+                onPlayTrailer={() => handlePlayTrailer(featuredMovie)}
+                loadingTrailer={loadingTrailer}
               />
             )}
 
@@ -355,6 +377,8 @@ export default function App() {
         onToggleFavorites={() =>
           selectedMovie && toggleFavorites(selectedMovie)
         }
+        onPlayTrailer={() => selectedMovie && handlePlayTrailer(selectedMovie)}
+        loadingTrailer={loadingTrailer}
       />
     </div>
   );

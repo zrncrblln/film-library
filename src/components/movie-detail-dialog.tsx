@@ -13,6 +13,8 @@ interface MovieDetailDialogProps {
   isInFavorites: boolean;
   onToggleWatchlist: () => void;
   onToggleFavorites: () => void;
+  onPlayTrailer: () => void;
+  loadingTrailer: boolean;
 }
 
 export function MovieDetailDialog({
@@ -23,6 +25,8 @@ export function MovieDetailDialog({
   isInFavorites,
   onToggleWatchlist,
   onToggleFavorites,
+  onPlayTrailer,
+  loadingTrailer,
 }: MovieDetailDialogProps) {
   if (!movie) return null;
 
@@ -84,9 +88,13 @@ export function MovieDetailDialog({
                   </div>
 
                   <div className="flex flex-wrap gap-3 mb-6">
-                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Button
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                      onClick={onPlayTrailer}
+                      disabled={loadingTrailer}
+                    >
                       <Play className="mr-2 h-5 w-5 fill-current" />
-                      Play Trailer
+                      {loadingTrailer ? "Loading..." : "Play Trailer"}
                     </Button>
                     <Button variant="secondary" onClick={onToggleWatchlist}>
                       {isInWatchlist ? (
