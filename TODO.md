@@ -9,8 +9,12 @@
 
 ## Next Steps
 
-- [ ] Commit and push the changes to GitHub
-- [ ] Ensure GitHub Pages is configured to deploy from the `build` directory or gh-pages branch
+- [ ] Commit and push the changes (including the build folder) to GitHub
+- [ ] In GitHub repository settings, go to Pages section
+- [ ] Set Source: "Deploy from a branch"
+- [ ] Set Branch: main (or your default branch)
+- [ ] Set Folder: /build
+- [ ] Save and wait for deployment
 - [ ] Test the live deployment at https://zrncrblln.github.io/film-library/
 - [ ] If still blank, check browser console for errors and verify assets are loading correctly
 
