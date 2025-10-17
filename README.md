@@ -1,22 +1,26 @@
-# Movie Library App
+# 🎬 Film Library App
 
 A modern, responsive movie library application built with React and TypeScript. Browse, search, and manage your favorite movies with an intuitive interface powered by The Movie Database (TMDB) API.
 
-![Movie Library App](https://img.shields.io/badge/React-18.3.1-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue) ![Vite](https://img.shields.io/badge/Vite-6.3.5-yellow) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-blue)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Deployed_on_GitHub_Pages-2ea44f?style=for-the-badge&logo=github)](https://zrncrblln.github.io/film-library/)
+![React](https://img.shields.io/badge/React-18.3.1-blue?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=flat-square&logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-6.3.5-yellow?style=flat-square&logo=vite)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-blue?style=flat-square&logo=tailwind-css)
 
 ## ✨ Features
 
-- **Movie Discovery**: Browse popular, trending, and top-rated movies
-- **Advanced Search**: Real-time movie search with debounced input
-- **Smart Filtering**: Filter movies by genre, rating, and release year
-- **Sorting Options**: Sort by rating, year, or title
-- **Personal Library**: Create and manage watchlists and favorites
-- **Movie Details**: Detailed movie information with cast, director, and synopsis
-- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
-- **Dark Theme**: Modern dark theme with customizable UI
-- **Local Storage**: Persistent watchlist and favorites across sessions
+- **🎯 Movie Discovery**: Browse popular, trending, and top-rated movies
+- **🔍 Advanced Search**: Real-time movie search with debounced input
+- **🎭 Smart Filtering**: Filter movies by genre, rating, and release year
+- **📊 Sorting Options**: Sort by rating, year, or title
+- **📚 Personal Library**: Create and manage watchlists and favorites
+- **🎞️ Movie Details**: Detailed movie information with cast, director, and synopsis
+- **📱 Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **🌙 Dark Theme**: Modern dark theme with customizable UI
+- **💾 Local Storage**: Persistent watchlist and favorites across sessions
 
-## 🛠️ Technologies Used
+## 🛠️ Tech Stack
 
 ### Frontend Framework
 
@@ -35,7 +39,6 @@ A modern, responsive movie library application built with React and TypeScript. 
 ### State Management & Data
 
 - **React Hook Form** - Performant forms with easy validation
-- **React Hook Form** integration with validation
 - **Local Storage** - Client-side data persistence
 
 ### API Integration
@@ -43,16 +46,11 @@ A modern, responsive movie library application built with React and TypeScript. 
 - **TMDB API** - The Movie Database API for movie data
 - **Fetch API** - Modern browser API for HTTP requests
 
-### Development Tools
-
-- **ESLint** - Code linting
-- **PostCSS** - CSS processing
-- **Autoprefixer** - CSS vendor prefixing
-
 ### Build & Deployment
 
 - **Vite** - Fast build tool with optimized production builds
-- **SWC** - Fast TypeScript/JavaScript compiler
+- **GitHub Actions** - Automated deployment to GitHub Pages
+- **GitHub Pages** - Free hosting for static sites
 
 ## 📋 Prerequisites
 
@@ -60,67 +58,62 @@ Before running this project, make sure you have:
 
 - **Node.js** (version 16 or higher)
 - **npm** or **yarn** package manager
-- **TMDB API Key** (free from [The Movie Database](https://www.themoviedb.org/settings/api))
+- **Git** for version control
 
-## 🚀 Installation
+## 🚀 Quick Start
 
-1. **Clone the repository**
+### 1. Clone the Repository
 
-   ```bash
-   git clone <repository-url>
-   cd film-library
-   ```
+```bash
+git clone https://github.com/zrncrblln/film-library.git
+cd film-library
+```
 
-2. **Install dependencies**
+### 2. Install Dependencies
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
-3. **Set up TMDB API Key**
+### 3. Start Development Server
 
-   - Get your API key from [TMDB](https://www.themoviedb.org/settings/api)
-   - The API key is already configured in `src/lib/tmdb-api.ts`
+```bash
+npm run dev
+```
 
-4. **Start the development server**
+### 4. Open in Browser
 
-   ```bash
-   npm run dev
-   ```
+Navigate to `http://localhost:3000/film-library/` - the app will automatically open!
 
-5. **Open your browser**
-   - Navigate to `http://localhost:3000`
-   - The app will automatically open in your default browser
-
-## 📖 Usage
+## 📖 Usage Guide
 
 ### Navigation
 
-- **Home**: Browse featured movies, trending content, and new releases
-- **Search**: Find specific movies with real-time search
-- **Library**: Manage your personal watchlist and favorites
+- **🏠 Home**: Browse featured movies, trending content, and new releases
+- **🔍 Search**: Find specific movies with real-time search
+- **📚 Library**: Manage your personal watchlist and favorites
 
 ### Movie Management
 
-- **Add to Watchlist**: Click the bookmark icon on any movie
-- **Add to Favorites**: Click the heart icon on any movie
-- **View Details**: Click on any movie poster to see detailed information
+- **📝 Add to Watchlist**: Click the bookmark icon on any movie
+- **❤️ Add to Favorites**: Click the heart icon on any movie
+- **ℹ️ View Details**: Click on any movie poster to see detailed information
 
 ### Filtering & Sorting
 
-- **Genre Filter**: Select multiple genres to narrow down results
-- **Sort Options**: Sort by rating, release year, or title
-- **Search**: Type movie titles for instant results
+- **🏷️ Genre Filter**: Select multiple genres to narrow down results
+- **📈 Sort Options**: Sort by rating, release year, or title
+- **🔎 Search**: Type movie titles for instant results
 
 ## 🏗️ Project Structure
 
 ```
 film-library/
-├── public/
+├── 📁 public/
 │   └── index.html                 # Main HTML template
-├── src/
-│   ├── components/
-│   │   ├── ui/                    # Reusable UI components (Radix UI)
+├── 📁 src/
+│   ├── 📁 components/
+│   │   ├── 📁 ui/                 # Reusable UI components (Radix UI)
 │   │   ├── filter-bar.tsx         # Movie filtering interface
 │   │   ├── hero-section.tsx       # Featured movie display
 │   │   ├── library-view.tsx       # Personal library management
@@ -130,25 +123,28 @@ film-library/
 │   │   ├── navigation.tsx         # App navigation
 │   │   ├── profile-view.tsx       # User profile section
 │   │   ├── search-bar.tsx         # Search functionality
-│   │   └── figma/                 # Figma design components
-│   ├── lib/
+│   │   └── 📁 figma/              # Figma design components
+│   ├── 📁 lib/
 │   │   ├── movie-data.ts          # Movie data types
 │   │   ├── tmdb-api.ts            # TMDB API integration
 │   │   └── useMovies.ts           # Custom hook for movie data
-│   ├── styles/
+│   ├── 📁 styles/
 │   │   └── globals.css            # Global styles and Tailwind
 │   ├── App.tsx                    # Main application component
 │   ├── main.tsx                   # Application entry point
 │   └── index.css                  # Tailwind CSS imports
-├── build/                         # Production build output
+├── 📁 build/                      # Production build output
+├── 📁 .github/
+│   └── 📁 workflows/              # GitHub Actions deployment
 ├── package.json                   # Dependencies and scripts
 ├── vite.config.ts                 # Vite configuration
+├── .gitignore                     # Git ignore rules
 └── README.md                      # Project documentation
 ```
 
 ## 🔌 API Integration
 
-This app integrates with The Movie Database (TMDB) API to fetch movie data:
+This app integrates with **The Movie Database (TMDB) API** to fetch movie data:
 
 ### Endpoints Used
 
@@ -165,7 +161,7 @@ This app integrates with The Movie Database (TMDB) API to fetch movie data:
 The TMDB API key is configured in `src/lib/tmdb-api.ts`:
 
 ```typescript
-const API_KEY = "your-api-key-here";
+const API_KEY = "c138886a68189d4f50a36bd5fe53e588";
 const BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 ```
@@ -174,11 +170,11 @@ const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
 ### Color Palette
 
-- **Primary**: Cyan (#00d4ff)
-- **Accent**: Red (#e94560)
-- **Background**: Dark (#0a0a0a)
-- **Surface**: Dark gray (#141414)
-- **Text**: Light gray (#e0e0e0)
+- **🔵 Primary**: Cyan (#00d4ff)
+- **🔴 Accent**: Red (#e94560)
+- **⚫ Background**: Dark (#0a0a0a)
+- **⚫ Surface**: Dark gray (#141414)
+- **⚪ Text**: Light gray (#e0e0e0)
 
 ### Typography
 
@@ -187,21 +183,41 @@ const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
 ### Components
 
-Built with Radix UI primitives for accessibility and customization, styled with Tailwind CSS utilities.
+Built with **Radix UI** primitives for accessibility and customization, styled with **Tailwind CSS** utilities.
 
 ## 📱 Responsive Design
 
 The app is fully responsive with breakpoints:
 
-- **Mobile**: < 768px
-- **Tablet**: 768px - 1024px
-- **Desktop**: > 1024px
+- **📱 Mobile**: < 768px (2 columns)
+- **📱 Tablet**: 768px - 1024px (4 columns)
+- **💻 Desktop**: > 1024px (6 columns)
 
-Grid layouts adapt from 2 columns on mobile to 6 columns on large screens.
+## 🚀 Deployment
 
-## 🔧 Development
+This project is automatically deployed to **GitHub Pages** using **GitHub Actions**.
 
-### Available Scripts
+### Live Demo
+
+🌐 **https://zrncrblln.github.io/film-library/**
+
+### Deployment Configuration
+
+- **Base Path**: `/film-library/` (configured in `vite.config.ts`)
+- **Build Command**: `npm run build`
+- **Output Directory**: `build/`
+- **SPA Support**: 404.html redirects for client-side routing
+
+### GitHub Actions Workflow
+
+The deployment is handled by `.github/workflows/deploy.yml` which:
+
+1. Triggers on pushes to `main` branch
+2. Installs dependencies and builds the project
+3. Uploads the `build/` directory as an artifact
+4. Deploys to GitHub Pages
+
+## 🔧 Development Scripts
 
 ```bash
 # Start development server
@@ -210,15 +226,9 @@ npm run dev
 # Build for production
 npm run build
 
-# Preview production build
+# Preview production build locally
 npm run preview
 ```
-
-### Code Quality
-
-- TypeScript for type safety
-- ESLint for code linting
-- Consistent code formatting
 
 ## 🤝 Contributing
 
@@ -234,12 +244,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **TMDB** for providing the movie database API
-- **Radix UI** for accessible component primitives
-- **Tailwind CSS** for the utility-first CSS framework
-- **Lucide** for beautiful icons
-- Original design inspiration from Figma community
+- **🎬 TMDB** - The Movie Database API
+- **🎨 Radix UI** - Accessible component primitives
+- **💨 Tailwind CSS** - Utility-first CSS framework
+- **🎯 Lucide** - Beautiful icons
+- **📐 Figma Community** - Original design inspiration
 
 ---
 
-**Note**: This project is based on a Figma design available at: https://www.figma.com/design/8XGgbgjZ91HkTxstXl9m7V/Movie-Library-App-Design
+**📝 Note**: This project is based on a Figma design available at: [Movie Library App Design](https://www.figma.com/design/8XGgbgjZ91HkTxstXl9m7V/Movie-Library-App-Design)
+
+**⭐ Star this repo if you found it helpful!**
